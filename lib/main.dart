@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'screens/profile_tab.dart';
 import 'screens/nutrition_tab.dart';
@@ -6,6 +7,7 @@ import 'screens/history_tab.dart';
 
 void main() {
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -19,8 +21,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
-        '/profile': (context) => MyHomePage(),
+        '/profile': (context) => const MyHomePage(),
       },
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.blue[100], // Set the global background color here
+      )
     );
   }
 }
@@ -29,6 +34,8 @@ class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
