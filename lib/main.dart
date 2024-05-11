@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
