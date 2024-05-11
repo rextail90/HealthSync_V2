@@ -1,4 +1,8 @@
 import 'package:healthsync_maybe/providers/timer_provider.dart';
+import 'dart:async';
+import 'package:healthsync_maybe/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
@@ -6,7 +10,9 @@ import 'screens/nutrition_tab.dart';
 import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     ChangeNotifierProvider<TimerProvider>(
       create: (context) => TimerProvider(),
@@ -37,11 +43,20 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   LoginScreen({super.key});
+
+  Future<UserCredential> signInWithEmailPassword(String email, String password) async {
+  return await _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<UserCredential> createAccount(String email, String password) async {
+  return await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +67,6 @@ class LoginScreen extends StatelessWidget {
         title: const Text('Login'),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.jpg"), // replace with your image
-            fit: BoxFit.cover,
-          ),
-        ),
         child: Form(
           key: _formKey,
           child: Padding(
@@ -65,11 +74,11 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 TextFormField(
-                  controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                      return 'Please enter your email';
                     }
                     return null;
                   },
@@ -87,10 +96,33 @@ class LoginScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   child: const Text('Login'),
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // If the form is valid, navigate to the profile screen.
-                      Navigator.pushReplacementNamed(context, '/profile');
+                    onPressed: () async {
+                      final String email = _emailController.text;
+                      final String password = _passwordController.text;
+                        final UserCredential user = await signInWithEmailPassword(email, password);
+
+                        // If the user is signed in, navigate to the profile page
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(context, '/profile');
+                        }
+                    }
+                ),
+                ElevatedButton(
+                  child: Text('Create account'),
+                  onPressed: () async {
+                    final String email = _emailController.text;
+                    final String password = _passwordController.text;
+
+                    try {
+                      final UserCredential user = await createAccount(email, password);
+
+                      // If the user is created, navigate to the profile page
+                      if (user != null) {
+                        Navigator.pushReplacementNamed(context, '/profile');
+                      }
+                    } catch (e) {
+                      // Handle the error
+                      print(e);
                     }
                   },
                 ),
