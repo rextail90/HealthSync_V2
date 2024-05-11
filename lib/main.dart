@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:healthsync_maybe/providers/timer_service.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
@@ -9,8 +9,8 @@ import 'screens/history_tab.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider<TimerService>(
-      create: (context) => TimerService(),
+    ChangeNotifierProvider<TimerProvider>(
+      create: (context) => TimerProvider(),
       child: const MyApp(), // Your main application widget
     ),
   );

@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:healthsync_maybe/providers/timer_service.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
 
-class QuickWorkoutPage extends StatelessWidget {
-  const QuickWorkoutPage({super.key});
+class QuickWorkoutPage extends StatefulWidget {
+  const QuickWorkoutPage({Key? key}) : super(key: key);
+
+  @override
+  _QuickWorkoutPageState createState() => _QuickWorkoutPageState();
+}
+
+class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<TimerProvider>(context, listen: false).start();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TimerService timerService = Provider.of<TimerService>(context);
+    final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -16,7 +27,7 @@ class QuickWorkoutPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
-              timerService.reset();  // Reset and stop the timer when finished
+              timerProvider.reset();
               Navigator.pop(context);
             },
             tooltip: 'Finish',
@@ -25,25 +36,17 @@ class QuickWorkoutPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_downward),
           onPressed: () {
-            Navigator.pop(context);  // Cancel workout
-            }      
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            AnimatedBuilder(
-              animation: timerService,  // This will rebuild when the timer updates
-              builder: (context, child) {
-                return Text(
-                  timerService.durationString,  // Display the formatted duration
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
+            Text(
+              timerProvider.durationString,
+              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -52,17 +55,21 @@ class QuickWorkoutPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                timerService.reset();  // Optionally reset the timer on cancel as well
-                Navigator.pop(context); // Cancel workout
+                timerProvider.reset();
+                Navigator.pop(context);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
               child: const Text('Cancel Workout'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Consider whether to stop the timer here if needed
   }
 }
