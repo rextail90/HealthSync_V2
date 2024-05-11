@@ -1,14 +1,21 @@
 import 'dart:async';
+import 'package:healthsync_maybe/providers/timer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
 import 'screens/nutrition_tab.dart';
 import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
 
 void main() {
-  runApp(const MyApp());
-  
+  runApp(
+    ChangeNotifierProvider<TimerService>(
+      create: (context) => TimerService(),
+      child: const MyApp(), // Your main application widget
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
