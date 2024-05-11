@@ -6,7 +6,7 @@ import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseTab extends StatelessWidget {
-  const ExerciseTab({Key? key}) : super(key: key);
+  const ExerciseTab({super.key});
 
   @override
   Widget build(BuildContext context) {
