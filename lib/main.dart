@@ -5,10 +5,12 @@ import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     
@@ -89,6 +91,8 @@ class LoginScreen extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -103,10 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color? _unselectedItemColor = Colors.grey[400];
 
   static final List<Widget> _tabPages = [
-    ProfileTab(),
-    NutritionTab(),
-    ExerciseTab(),
-    HistoryTab(),
+    const ProfileTab(),
+    const NutritionTab(),
+    const ExerciseTab(),
+    const HistoryTab(),
   ];
 
   void _onTabTapped(int index) {
