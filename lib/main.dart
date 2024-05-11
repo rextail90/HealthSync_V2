@@ -108,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                     }
                 ),
                 ElevatedButton(
-                  child: Text('Create account'),
+                  child: const Text('Create account'),
                   onPressed: () async {
                     final String email = _emailController.text;
                     final String password = _passwordController.text;
@@ -124,6 +124,12 @@ class LoginScreen extends StatelessWidget {
                       // Handle the error
                       print(e);
                     }
+                  },
+                ),
+                ElevatedButton(
+                  child: const Text('Skip'),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/profile');
                   },
                 ),
               ],
@@ -153,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static final List<Widget> _tabPages = [
     const ProfileTab(),
-    const NutritionTab(),
+    NutritionTab(),
     const ExerciseTab(),
     const HistoryTab(),
   ];

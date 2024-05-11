@@ -16,7 +16,7 @@ class NutritionTab extends StatelessWidget {
               'Enter Nutrition Data:',
               style: TextStyle(fontSize: 20.0),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             NutritionForm(),
           ],
         ),
@@ -42,20 +42,20 @@ class _NutritionFormState extends State<NutritionForm> {
       children: [
         TextFormField(
           controller: carbsController,
-          decoration: InputDecoration(labelText: 'Carbohydrates'),
+          decoration: const InputDecoration(labelText: 'Carbohydrates'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: proteinController,
-          decoration: InputDecoration(labelText: 'Protein'),
+          decoration: const InputDecoration(labelText: 'Protein'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: fatController,
-          decoration: InputDecoration(labelText: 'Fat'),
+          decoration: const InputDecoration(labelText: 'Fat'),
           keyboardType: TextInputType.number,
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {
             showDialog(
@@ -73,7 +73,7 @@ class _NutritionFormState extends State<NutritionForm> {
               ),
             );
           },
-          child: Text('Generate Pie Chart'),
+          child: const Text('Generate Pie Chart'),
         ),
       ],
     );
@@ -91,7 +91,7 @@ class PieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(300, 300),
+      size: const Size(300, 300),
       painter: PieChartPainter(carbs, protein, fat),
     );
   }
@@ -165,7 +165,7 @@ class PieChartPainter extends CustomPainter {
 
     // Draw label
     TextSpan span = TextSpan(
-      style: TextStyle(color: Colors.black, fontSize: 14.0),
+      style: const TextStyle(color: Colors.black, fontSize: 14.0),
       text: '$label\n(${(percentage * 100).toStringAsFixed(1)}%)',
     );
     TextPainter tp = TextPainter(
