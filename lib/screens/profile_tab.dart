@@ -4,7 +4,9 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[100],
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
         title: const Text(
           'User Profile',
           style: TextStyle(
@@ -16,33 +18,32 @@ class ProfileTab extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Column containing CircleAvatar and 'User' text
-              const Column(
-                children: [
-                  CircleAvatar(
-                    radius: 70.0,
-                    backgroundColor: Colors.blue,
-                    child: Icon(
-                      Icons.person,
-                      size: 60.0,
-                      color: Colors.white,
-                    ),
+        child: ListView(
+          children: [
+            // CircleAvatar and 'User' text
+            const Column(
+              children: [
+                CircleAvatar(
+                  radius: 60.0,
+                  backgroundColor: Colors.blue,
+                  child: Icon(
+                    Icons.person,
+                    size: 60.0,
+                    color: Colors.white,
                   ),
-                  SizedBox(height: 10.0), // Spacer between CircleAvatar and 'User' text
-                  Text(
-                    'User',
-                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40.0), // Spacer between 'User' and widgets below
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  'User',
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 40.0), // Spacer between 'User' and widgets below
 
-              // Macros eaten widget with border
-              _buildBorderedWidget(
+            // First widget: Macros Eaten Today
+            SingleChildScrollView(
+              child: _buildBorderedWidget(
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -60,10 +61,12 @@ class ProfileTab extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 20.0), // Spacer between widgets
+            ),
+            const SizedBox(height: 20.0), // Spacer between widgets
 
-              // Weekly Workout Hours widget with border
-              _buildBorderedWidget(
+            // Second widget: Weekly Workout Hours
+            SingleChildScrollView(
+              child: _buildBorderedWidget(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,8 +93,8 @@ class ProfileTab extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -101,6 +104,7 @@ class ProfileTab extends StatelessWidget {
   Widget _buildBorderedWidget({required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(12.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical margin as needed
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
