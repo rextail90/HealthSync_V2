@@ -1,8 +1,8 @@
+import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'dart:async';
 import 'package:healthsync_maybe/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:healthsync_maybe/providers/timer_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
@@ -14,12 +14,11 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    ChangeNotifierProvider<TimerService>(
-        create: (context) => TimerService(),
-        child: const MyApp(),
-    ) 
+    ChangeNotifierProvider<TimerProvider>(
+      create: (context) => TimerProvider(),
+      child: const MyApp(), // Your main application widget
+    ),
   );
-
 }
 
 

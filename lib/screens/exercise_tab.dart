@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:healthsync_maybe/providers/timer_service.dart';
-import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 import 'package:provider/provider.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
+import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 
-class ExerciseTab extends StatelessWidget {
+class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
 
   @override
+  _ExerciseTabState createState() => _ExerciseTabState();
+}
+
+class _ExerciseTabState extends State<ExerciseTab> {
+  void navigateToWorkout(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const QuickWorkoutPage(),
+    ));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final timerService = Provider.of<TimerService>(context);  // Get the TimerService
+    final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -65,19 +74,20 @@ class ExerciseTab extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            // Add more widgets as needed
+            const SizedBox(height: 20),
           ],
         ),
       ),
+      bottomSheet: timerProvider.isRunning ? GestureDetector(
+        onTap: () => navigateToWorkout(context),
+        child: Container(
+          height: 50,
+          color: Colors.blue,
+          child: Center(
+            child: Text(timerProvider.durationString),
+          ),
+        ),
+      ) : null,
     );
   }
 }
-
-  Widget _buildWorkoutTemplate(String title, List<String> exercises) {
-    return Card(
-      child: ExpansionTile(
-        title: Text(title),
-        children: exercises.map((exercise) => ListTile(title: Text(exercise))).toList(),
-      ),
-    );
-  }
