@@ -27,7 +27,14 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
+<<<<<<< HEAD
         return windows;
+=======
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -79,6 +86,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'healthsync-cda1a.appspot.com',
     iosBundleId: 'com.example.healthsyncMaybe',
   );
+<<<<<<< HEAD
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyC4M5oUJZLbBF4DcQ6u9CkMI6p2fnEv7l0',
@@ -90,4 +98,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'healthsync-cda1a.appspot.com',
     measurementId: 'G-KD9X7TXFW6',
   );
+=======
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
 }

@@ -27,9 +27,13 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
+<<<<<<< HEAD
 		6638FE373721B0FE276DBB43 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0E7C4D7693E912DCCE9E420D /* GoogleService-Info.plist */; };
 		99859E80D9A3322D3DA24BAE /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 788A659E1F2DA315C250DF05 /* Pods_RunnerTests.framework */; };
 		B84D7850E8FDED1E8F1F666B /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DEE35BD9D31E3B30F1E53B8 /* Pods_Runner.framework */; };
+=======
+		A96D8CADA5D92A8BBC7DD599 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3241D8B1746F9B7D48711460 /* GoogleService-Info.plist */; };
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +67,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+<<<<<<< HEAD
 		0E7C4D7693E912DCCE9E420D /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
+=======
+		3241D8B1746F9B7D48711460 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
 		331C80D5294CF71000263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
@@ -153,8 +161,12 @@
 				331C80D6294CF71000263BE5 /* RunnerTests */,
 				33CC10EE2044A3C60003C045 /* Products */,
 				D73912EC22F37F3D000D13A0 /* Frameworks */,
+<<<<<<< HEAD
 				0E7C4D7693E912DCCE9E420D /* GoogleService-Info.plist */,
 				131B4E61EA4D3513E1174008 /* Pods */,
+=======
+				3241D8B1746F9B7D48711460 /* GoogleService-Info.plist */,
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
 			);
 			sourceTree = "<group>";
 		};
@@ -320,7 +332,11 @@
 			files = (
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
+<<<<<<< HEAD
 				6638FE373721B0FE276DBB43 /* GoogleService-Info.plist in Resources */,
+=======
+				A96D8CADA5D92A8BBC7DD599 /* GoogleService-Info.plist in Resources */,
+>>>>>>> 8b9ae51 (FIREBASE SETUP)
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
