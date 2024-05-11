@@ -13,12 +13,79 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
-      title: 'HealthSync',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      title: 'My App',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/profile': (context) => MyHomePage(),
+      },
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue[100],
+      appBar: AppBar(
+        backgroundColor: Colors.blue[100],
+        title: const Text('Login'),
       ),
-      home: const MyHomePage(),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.jpg"), // replace with your image
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                ElevatedButton(
+                  child: const Text('Login'),
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      // If the form is valid, navigate to the profile screen.
+                      Navigator.pushReplacementNamed(context, '/profile');
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -32,6 +99,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  
 
   // Colors for BottomNavigationBar
   final Color _backgroundColor = Colors.white;
@@ -55,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
           title: const Text(
           'HealthSync',
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
