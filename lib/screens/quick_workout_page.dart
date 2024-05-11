@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 
 class QuickWorkoutPage extends StatefulWidget {
-  const QuickWorkoutPage({Key? key}) : super(key: key);
+  const QuickWorkoutPage({super.key});
 
   @override
   _QuickWorkoutPageState createState() => _QuickWorkoutPageState();
@@ -58,8 +58,8 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
                 timerProvider.reset();
                 Navigator.pop(context);
               },
-              child: const Text('Cancel Workout'),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Cancel Workout'),
             ),
           ],
         ),

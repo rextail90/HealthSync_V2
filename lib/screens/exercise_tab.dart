@@ -4,7 +4,7 @@ import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 
 class ExerciseTab extends StatefulWidget {
-  const ExerciseTab({Key? key}) : super(key: key);
+  const ExerciseTab({super.key});
 
   @override
   _ExerciseTabState createState() => _ExerciseTabState();
