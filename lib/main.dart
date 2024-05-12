@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'dart:async';
 import 'package:healthsync_maybe/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-=======
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
->>>>>>> 8b9ae51 (FIREBASE SETUP)
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
@@ -17,7 +12,6 @@ import 'screens/history_tab.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'package:healthsync_maybe/screens/nutrition_data.dart';
 
-<<<<<<< HEAD
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -31,14 +25,6 @@ void main() async {
       ),
     ),
   );
-=======
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
->>>>>>> 8b9ae51 (FIREBASE SETUP)
 }
 
 class MyApp extends StatelessWidget {
