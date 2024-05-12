@@ -103,7 +103,7 @@ class _NutritionFormState extends State<NutritionForm> {
                 // Access the updated data using the provider
                 final updatedData = NutritionDataProvider.of(context);
                 return AlertDialog(
-                  title: const Text("Nutrition Summary"),
+                  title: const Text("How far you are from Goals:"),
                   content: Container(
                     width: double.maxFinite,
                     child: Column(
@@ -112,6 +112,21 @@ class _NutritionFormState extends State<NutritionForm> {
                         Text("Carbs: ${updatedData.carbs}g"),
                         Text("Protein: ${updatedData.protein}g"),
                         Text("Fats: ${updatedData.fats}g"),
+                        const SizedBox(height: 20),
+                        Container(
+                            width: 200, // Define a fixed size for the pie chart
+                            height: 200,
+                            child: CustomPaint(
+                              painter: PieChartPainter(
+                                carbs: double.parse(carbsController.text),
+                                protein: double.parse(proteinController.text),
+                                fat: double.parse(fatController.text),
+                                carbGoal: double.parse(carbGoalController.text),
+                                proteinGoal:
+                                    double.parse(proteinGoalController.text),
+                                fatGoal: double.parse(fatGoalController.text),
+                              ),
+                            ))
                       ],
                     ),
                   ),
