@@ -148,7 +148,8 @@ class _ProfileTabState extends State<ProfileTab> {
               ),
               TextField(
                 controller: dayController,
-                decoration: const InputDecoration(hintText: 'Enter day'),
+                decoration: const InputDecoration(
+                    hintText: 'Enter day (3 letters only): Mon, Tue, ...'),
               ),
             ],
           ),
