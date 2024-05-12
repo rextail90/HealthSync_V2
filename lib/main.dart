@@ -103,10 +103,8 @@ class LoginScreen extends StatelessWidget {
                         final UserCredential user = await signInWithEmailPassword(email, password);
 
                         // If the user is signed in, navigate to the profile page
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(context, '/profile');
-                        }
-                    }
+                        Navigator.pushReplacementNamed(context, '/profile');
+                                          }
                 ),
                 ElevatedButton(
                   child: const Text('Create account'),
@@ -118,10 +116,8 @@ class LoginScreen extends StatelessWidget {
                       final UserCredential user = await createAccount(email, password);
 
                       // If the user is created, navigate to the profile page
-                      if (user != null) {
-                        Navigator.pushReplacementNamed(context, '/profile');
-                      }
-                    } catch (e) {
+                      Navigator.pushReplacementNamed(context, '/profile');
+                                        } catch (e) {
                       // Handle the error
                       print(e);
                     }

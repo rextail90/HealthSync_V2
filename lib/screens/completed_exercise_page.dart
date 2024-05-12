@@ -4,7 +4,7 @@ class CompletedExercisesPage extends StatelessWidget {
   final String duration;
   final List<Map<String, String>> completedExercises;
 
-  const CompletedExercisesPage({Key? key, required this.duration, required this.completedExercises}) : super(key: key);
+  const CompletedExercisesPage({super.key, required this.duration, required this.completedExercises});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class CompletedExercisesPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Great Job Finishing Your Exercise!', style: Theme.of(context).textTheme.headline5),
+            child: Text('Great Job Finishing Your Exercise!', style: Theme.of(context).textTheme.headlineSmall),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Duration: $duration', style: Theme.of(context).textTheme.headline6),
+            child: Text('Duration: $duration', style: Theme.of(context).textTheme.titleLarge),
           ),
           const Text('Here are your stats:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Expanded(

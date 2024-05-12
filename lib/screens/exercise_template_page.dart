@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ExerciseTemplatePage extends StatefulWidget {
   final List<Map<String, String>>? template;
 
-  const ExerciseTemplatePage({Key? key, this.template}) : super(key: key);
+  const ExerciseTemplatePage({super.key, this.template});
 
   @override
   _ExerciseTemplatePageState createState() => _ExerciseTemplatePageState();
@@ -98,8 +98,8 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: _showAddExerciseDialog,
+        child: const Icon(Icons.add),
       ),
     );
   }

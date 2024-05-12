@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class NutritionTab extends StatelessWidget {
-  const NutritionTab({Key? key}) : super(key: key);
+  const NutritionTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,15 +11,15 @@ class NutritionTab extends StatelessWidget {
         backgroundColor: Colors.blue[100],
         title: const Text('Nutrition'),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Enter Nutrition Data:',
               style: TextStyle(fontSize: 20.0),
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: 20.0),
             NutritionForm(),
           ],
         ),
@@ -29,6 +29,8 @@ class NutritionTab extends StatelessWidget {
 }
 
 class NutritionForm extends StatefulWidget {
+  const NutritionForm({super.key});
+
   @override
   _NutritionFormState createState() => _NutritionFormState();
 }
@@ -61,30 +63,30 @@ class _NutritionFormState extends State<NutritionForm> {
           decoration: const InputDecoration(labelText: 'Fat'),
           keyboardType: TextInputType.number,
         ),
-        SizedBox(height: 20.0),
-        Text('Enter Your Goals:'),
+        const SizedBox(height: 20.0),
+        const Text('Enter Your Goals:'),
         TextFormField(
           controller: carbGoalController,
-          decoration: InputDecoration(labelText: 'Carbohydrates Goal'),
+          decoration: const InputDecoration(labelText: 'Carbohydrates Goal'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: proteinGoalController,
-          decoration: InputDecoration(labelText: 'Protein Goal'),
+          decoration: const InputDecoration(labelText: 'Protein Goal'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: fatGoalController,
-          decoration: InputDecoration(labelText: 'Fat Goal'),
+          decoration: const InputDecoration(labelText: 'Fat Goal'),
           keyboardType: TextInputType.number,
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                content: Container(
+                content: SizedBox(
                   width: 300,
                   height: 300,
                   child: PieChart(
@@ -114,7 +116,7 @@ class PieChart extends StatelessWidget {
   final double proteinGoal;
   final double fatGoal;
 
-  const PieChart({
+  const PieChart({super.key, 
     required this.carbs,
     required this.protein,
     required this.fat,
@@ -128,7 +130,7 @@ class PieChart extends StatelessWidget {
     return Stack(
       children: [
         CustomPaint(
-          size: Size(300, 300),
+          size: const Size(300, 300),
           painter: PieChartPainter(
             carbs: carbs,
             protein: protein,
@@ -138,7 +140,7 @@ class PieChart extends StatelessWidget {
             fatGoal: fatGoal,
           ),
         ),
-        Positioned(
+        const Positioned(
           top: 0,
           left: 0,
           right: 0,
@@ -275,7 +277,7 @@ class PieChartPainter extends CustomPainter {
     final double labelX = center.dx + labelRadius * math.cos(labelAngle);
     final double labelY = center.dy + labelRadius * math.sin(labelAngle);
     final TextSpan span = TextSpan(
-      style: TextStyle(
+      style: const TextStyle(
           color: Colors.black, fontSize: 14.0, fontWeight: FontWeight.bold),
       text: label,
     );
@@ -295,7 +297,7 @@ class PieChartPainter extends CustomPainter {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: NutritionTab(),
   ));

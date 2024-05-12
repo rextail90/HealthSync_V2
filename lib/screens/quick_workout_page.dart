@@ -11,8 +11,8 @@ class QuickWorkoutPage extends StatefulWidget {
 }
 
 class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
-  List<Map<String, String>> _exercises = []; // List to store active exercises
-  List<Map<String, String>> _completedExercises = []; // List to store completed exercises
+  final List<Map<String, String>> _exercises = []; // List to store active exercises
+  final List<Map<String, String>> _completedExercises = []; // List to store completed exercises
 
   @override
   void initState() {
