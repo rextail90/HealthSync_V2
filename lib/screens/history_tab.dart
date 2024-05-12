@@ -9,8 +9,10 @@ class HistoryTab extends StatelessWidget {
         Provider.of<ExerciseHistoryProvider>(context).completedSessions;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Exercise History")),
-      backgroundColor: Colors.blue[100],
+      appBar: AppBar(
+        title: const Text("Exercise History"),
+        backgroundColor: Colors.blue[100], // Change to your desired color
+      ),
       body: ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (context, index) {
