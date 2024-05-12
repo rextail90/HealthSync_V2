@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'dart:math' as math;
 
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
 
 class PieChartPainter extends CustomPainter {
   final double protein;
@@ -37,7 +35,7 @@ class PieChartPainter extends CustomPainter {
         text: TextSpan(
           text:
               "$label ${(value / total * 100).toStringAsFixed(1)}%", // Label and percentage
-          style: TextStyle(color: Colors.white, fontSize: 12),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -66,6 +64,8 @@ class PieChartPainter extends CustomPainter {
 }
 
 class ProfileTab extends StatefulWidget {
+  const ProfileTab({super.key});
+
   @override
   _ProfileTabState createState() => _ProfileTabState();
 }
@@ -95,7 +95,7 @@ class BarChartPainter extends CustomPainter {
     // Draw text on the bar
     final textSpan = TextSpan(
       text: '$hours',
-      style: TextStyle(color: Colors.white, fontSize: 14),
+      style: const TextStyle(color: Colors.white, fontSize: 14),
     );
     final textPainter = TextPainter(
       text: textSpan,

@@ -115,10 +115,8 @@ class LoginScreen extends StatelessWidget {
                           await signInWithEmailPassword(email, password);
 
                       // If the user is signed in, navigate to the profile page
-                      if (user != null) {
-                        Navigator.pushReplacementNamed(context, '/profile');
-                      }
-                    }),
+                      Navigator.pushReplacementNamed(context, '/profile');
+                                        }),
                 ElevatedButton(
                   child: const Text('Create account'),
                   onPressed: () async {
@@ -168,10 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color? _unselectedItemColor = Colors.grey[400];
 
   static final List<Widget> _tabPages = [
-    ProfileTab(),
+    const ProfileTab(),
     const NutritionTab(),
     const ExerciseTab(),
-    HistoryTab(),
+    const HistoryTab(),
   ];
 
   void _onTabTapped(int index) {

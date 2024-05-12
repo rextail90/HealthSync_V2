@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
-import 'package:healthsync_maybe/screens/nutrition_data.dart';
 import 'dart:math' as math;
 
 class NutritionTab extends StatelessWidget {
@@ -86,6 +85,28 @@ class _NutritionFormState extends State<NutritionForm> {
         ElevatedButton(
           onPressed: () {
             // Access the state to update nutrition data
+            if (carbsController.text.isEmpty ||
+                proteinController.text.isEmpty ||
+                fatController.text.isEmpty 
+                || carbGoalController.text.isEmpty ||
+                proteinGoalController.text.isEmpty ||
+                fatGoalController.text.isEmpty) {
+              showDialog(context: context, builder: (BuildContext context){
+                return AlertDialog(
+                  title: const Text("Error"),
+                  content: const Text("Please enter all nutrition data!"),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text("Close"),
+                      onPressed: () { Navigator.of(context).pop();
+                      }
+                    ),
+                  ],
+                );
+              }
+              );
+              throw Exception("Please enter all nutrition data");
+            } else {
             NutritionDataProvider.of(context).updateNutritionData(
               int.parse(proteinController.text.isNotEmpty
                   ? proteinController.text
@@ -95,6 +116,7 @@ class _NutritionFormState extends State<NutritionForm> {
               int.parse(
                   fatController.text.isNotEmpty ? fatController.text : "0"),
             );
+            }
 
             // Show the dialog after updating the data
             showDialog(
@@ -104,7 +126,7 @@ class _NutritionFormState extends State<NutritionForm> {
                 final updatedData = NutritionDataProvider.of(context);
                 return AlertDialog(
                   title: const Text("How far you are from Goals:"),
-                  content: Container(
+                  content: SizedBox(
                     width: double.maxFinite,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -113,7 +135,7 @@ class _NutritionFormState extends State<NutritionForm> {
                         Text("Protein: ${updatedData.protein}g"),
                         Text("Fats: ${updatedData.fats}g"),
                         const SizedBox(height: 20),
-                        Container(
+                        SizedBox(
                             width: 200, // Define a fixed size for the pie chart
                             height: 200,
                             child: CustomPaint(

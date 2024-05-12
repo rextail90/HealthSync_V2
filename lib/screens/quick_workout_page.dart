@@ -103,11 +103,11 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
               Provider.of<TimerProvider>(context, listen: false)
                 .reset(); // Resets the timer when navigating back
             },
-            child: const Text('Cancel Workout'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                textStyle: const TextStyle(color: Colors.white),
             ),
+            child: const Text('Cancel Workout'),
           ),
           const SizedBox(height: 20),
           Expanded(

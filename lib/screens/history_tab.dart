@@ -3,6 +3,8 @@ import 'package:healthsync_maybe/providers/history_provider.dart';
 import 'package:provider/provider.dart';
 
 class HistoryTab extends StatelessWidget {
+  const HistoryTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> sessions =

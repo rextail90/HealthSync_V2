@@ -5,9 +5,8 @@ class NutritionDataProvider extends StatefulWidget {
   final Widget child;
   final NutritionData initialData;
 
-  NutritionDataProvider(
-      {Key? key, required this.child, required this.initialData})
-      : super(key: key);
+  const NutritionDataProvider(
+      {super.key, required this.child, required this.initialData});
 
   static NutritionData of(BuildContext context) {
     _NutritionDataProviderState providerState =
@@ -46,8 +45,7 @@ class _NutritionDataProviderState extends State<NutritionDataProvider> {
 class NutritionDataInherited extends InheritedWidget {
   final NutritionData data;
 
-  NutritionDataInherited({Key? key, required this.data, required Widget child})
-      : super(key: key, child: child);
+  const NutritionDataInherited({super.key, required this.data, required super.child});
 
   @override
   bool updateShouldNotify(NutritionDataInherited oldWidget) {

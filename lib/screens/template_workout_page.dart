@@ -63,7 +63,7 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
             child: ListTile(
               title: Text(widget.template[index]['name'] ?? 'No Name'),
               trailing: IconButton(
-                icon: Icon(Icons.check),
+                icon: const Icon(Icons.check),
                 onPressed: () {
                   setState(() {
                     if (!_completedExercises.contains(widget.template[index])) {
