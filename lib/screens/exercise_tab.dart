@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 
-
 class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
 
@@ -13,10 +12,18 @@ class ExerciseTab extends StatefulWidget {
 }
 
 class _ExerciseTabState extends State<ExerciseTab> {
-  void navigateToWorkout(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const QuickWorkoutPage(),
-    ));
+  List<List<Map<String, String>>> existingWorkoutTemplates = [];
+
+  void navigateToWorkout(BuildContext context) async {
+    List<Map<String, String>> newTemplate = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ExerciseTemplatePage()),
+    );
+
+    if (newTemplate != null) {
+      setState(() {
+        existingWorkoutTemplates.add(newTemplate);
+      });
+    }
   }
 
   @override
@@ -42,12 +49,22 @@ class _ExerciseTabState extends State<ExerciseTab> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   foregroundColor: Colors.white,
                   side: const BorderSide(color: Colors.black, width: 1),
                 ),
                 child: const Text('Start Quick Workout'),
               ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: existingWorkoutTemplates.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(existingWorkoutTemplates[index] as String),
+                );
+              },
             ),
             const SizedBox(height: 20),
             const Align(
@@ -60,15 +77,17 @@ class _ExerciseTabState extends State<ExerciseTab> {
             Align(
               alignment: Alignment.topLeft,
               child: ElevatedButton(
-                onPressed: () async{
-                  final List<String> exercises = await Navigator.of(context).push(MaterialPageRoute(
+                onPressed: () async {
+                  final List<String> exercises =
+                      await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ExerciseTemplatePage(),
                   ));
                   // Save the template
                                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   side: const BorderSide(color: Colors.black, width: 1),
                 ),
                 child: const Text('Create New Template'),
@@ -86,16 +105,18 @@ class _ExerciseTabState extends State<ExerciseTab> {
           ],
         ),
       ),
-      bottomSheet: timerProvider.isRunning ? GestureDetector(
-        onTap: () => navigateToWorkout(context),
-        child: Container(
-          height: 50,
-          color: Colors.blue,
-          child: Center(
-            child: Text(timerProvider.durationString),
-          ),
-        ),
-      ) : null,
+      bottomSheet: timerProvider.isRunning
+          ? GestureDetector(
+              onTap: () => navigateToWorkout(context),
+              child: Container(
+                height: 50,
+                color: Colors.blue,
+                child: Center(
+                  child: Text(timerProvider.durationString),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
