@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
+import 'package:healthsync_maybe/screens/nutrition_data.dart';
 import 'dart:math' as math;
 
 class NutritionTab extends StatelessWidget {
@@ -81,23 +83,13 @@ class _NutritionFormState extends State<NutritionForm> {
         SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: Container(
-                  width: 300,
-                  height: 300,
-                  child: PieChart(
-                    carbs: double.parse(carbsController.text),
-                    protein: double.parse(proteinController.text),
-                    fat: double.parse(fatController.text),
-                    carbGoal: double.parse(carbGoalController.text),
-                    proteinGoal: double.parse(proteinGoalController.text),
-                    fatGoal: double.parse(fatGoalController.text),
-                  ),
-                ),
-              ),
+            // Update data in provider
+            NutritionDataProvider.of(context).updateNutritionData(
+              int.parse(proteinController.text),
+              int.parse(carbsController.text),
+              int.parse(fatController.text),
             );
+            // Your existing showDialog code can remain here if you still need it
           },
           child: const Text('Generate Pie Chart'),
         ),
@@ -138,7 +130,7 @@ class PieChart extends StatelessWidget {
             fatGoal: fatGoal,
           ),
         ),
-        Positioned(
+        const Positioned(
           top: 0,
           left: 0,
           right: 0,

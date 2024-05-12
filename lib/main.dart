@@ -9,36 +9,40 @@ import 'screens/profile_tab.dart';
 import 'screens/nutrition_tab.dart';
 import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
+import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
+import 'package:healthsync_maybe/screens/nutrition_data.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(
-    ChangeNotifierProvider<TimerProvider>(
-      create: (context) => TimerProvider(),
-      child: const MyApp(), // Your main application widget
+    NutritionDataProvider(
+      data: NutritionData(), // Provide an initial empty or default set of data
+      child: ChangeNotifierProvider<TimerProvider>(
+        create: (context) => TimerProvider(),
+        child: const MyApp(), // Your main application widget
+      ),
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
-      title: 'My App',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginScreen(),
-        '/profile': (context) => const MyHomePage(),
-      },
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blue[100], // Set the global background color here
-      )
-    );
+        title: 'My App',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => LoginScreen(),
+          '/profile': (context) => const MyHomePage(),
+        },
+        theme: ThemeData(
+          scaffoldBackgroundColor:
+              Colors.blue[100], // Set the global background color here
+        ));
   }
 }
 
@@ -50,12 +54,15 @@ class LoginScreen extends StatelessWidget {
 
   LoginScreen({super.key});
 
-  Future<UserCredential> signInWithEmailPassword(String email, String password) async {
-  return await _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> signInWithEmailPassword(
+      String email, String password) async {
+    return await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
   }
 
   Future<UserCredential> createAccount(String email, String password) async {
-  return await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    return await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
   }
 
   @override
@@ -95,18 +102,18 @@ class LoginScreen extends StatelessWidget {
                   },
                 ),
                 ElevatedButton(
-                  child: const Text('Login'),
+                    child: const Text('Login'),
                     onPressed: () async {
                       final String email = _emailController.text;
                       final String password = _passwordController.text;
-                        final UserCredential user = await signInWithEmailPassword(email, password);
+                      final UserCredential user =
+                          await signInWithEmailPassword(email, password);
 
-                        // If the user is signed in, navigate to the profile page
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(context, '/profile');
-                        }
-                    }
-                ),
+                      // If the user is signed in, navigate to the profile page
+                      if (user != null) {
+                        Navigator.pushReplacementNamed(context, '/profile');
+                      }
+                    }),
                 ElevatedButton(
                   child: const Text('Create account'),
                   onPressed: () async {
@@ -114,7 +121,8 @@ class LoginScreen extends StatelessWidget {
                     final String password = _passwordController.text;
 
                     try {
-                      final UserCredential user = await createAccount(email, password);
+                      final UserCredential user =
+                          await createAccount(email, password);
 
                       // If the user is created, navigate to the profile page
                       if (user != null) {
@@ -150,7 +158,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  
 
   // Colors for BottomNavigationBar
   final Color _backgroundColor = Colors.white;
@@ -158,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color? _unselectedItemColor = Colors.grey[400];
 
   static final List<Widget> _tabPages = [
-    const ProfileTab(),
+    ProfileTab(),
     const NutritionTab(),
     const ExerciseTab(),
     const HistoryTab(),
@@ -175,18 +182,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[100],
-          title: const Text(
+        title: const Text(
           'HealthSync',
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
         ),
-        
       ),
       body: _tabPages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         backgroundColor: _backgroundColor, // Set background color
         selectedItemColor: _selectedItemColor, // Set color of selected item
-        unselectedItemColor: _unselectedItemColor, // Set color of unselected items
+        unselectedItemColor:
+            _unselectedItemColor, // Set color of unselected items
         onTap: _onTabTapped,
         items: const [
           BottomNavigationBarItem(

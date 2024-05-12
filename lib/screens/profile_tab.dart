@@ -1,7 +1,128 @@
 import 'package:flutter/material.dart';
 
-class ProfileTab extends StatelessWidget {
-  const ProfileTab({super.key});
+class ProfileTab extends StatefulWidget {
+  @override
+  _ProfileTabState createState() => _ProfileTabState();
+}
+
+class WorkoutData {
+  final String day;
+  int hours;
+
+  WorkoutData({required this.day, required this.hours});
+}
+
+class BarChartPainter extends CustomPainter {
+  final int hours; // Add a field to hold the number of hours
+
+  BarChartPainter(this.hours); // Modify constructor to accept hours
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 5.0
+      ..style = PaintingStyle.fill;
+
+    // Draw the rectangle bar
+    canvas.drawRect(Offset.zero & size, paint);
+
+    // Draw text on the bar
+    final textSpan = TextSpan(
+      text: '$hours',
+      style: TextStyle(color: Colors.white, fontSize: 14),
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+    );
+
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+
+    // Position the text in the center of the bar
+    final xCenter = (size.width - textPainter.width) / 2;
+    final yCenter = (size.height - textPainter.height) / 2;
+    final offset = Offset(xCenter, yCenter);
+    textPainter.paint(canvas, offset);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true; // Always repaint for demo purposes
+  }
+}
+
+@override
+bool shouldRepaint(CustomPainter oldDelegate) {
+  return false;
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  final List<WorkoutData> workoutData = [];
+
+  void _showInputDialog(BuildContext context) {
+    final TextEditingController hoursController = TextEditingController();
+    final TextEditingController dayController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Workout Data'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Adjusted for better UI handling
+            children: <Widget>[
+              TextField(
+                controller: hoursController,
+                decoration: const InputDecoration(hintText: 'Enter hours'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: dayController,
+                decoration: const InputDecoration(hintText: 'Enter day'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Add'),
+              onPressed: () {
+                final String day = dayController.text.trim();
+                final int hours = int.tryParse(hoursController.text) ?? 0;
+
+                // Try to find existing data for the day
+                int index = workoutData.indexWhere(
+                    (data) => data.day.toLowerCase() == day.toLowerCase());
+
+                if (index != -1) {
+                  // Update existing data
+                  workoutData[index].hours = hours;
+                } else {
+                  // Add new data entry
+                  workoutData.add(WorkoutData(day: day, hours: hours));
+                }
+
+                setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ...
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +162,8 @@ class ProfileTab extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 40.0), // Spacer between 'User' and widgets below
+            const SizedBox(
+                height: 40.0), // Spacer between 'User' and widgets below
 
             // First widget: Macros Eaten Today
             SingleChildScrollView(
@@ -57,7 +179,7 @@ class ProfileTab extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Protein: 50g | Carbs: 120g | Fat: 30g',
+                      'Protein: 21g | Carbs: 42g | Fat: 30g',
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                     ),
                   ],
@@ -69,30 +191,37 @@ class ProfileTab extends StatelessWidget {
             // Second widget: Weekly Workout Hours
             SingleChildScrollView(
               child: _buildBorderedWidget(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Weekly Workout Hours',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Weekly Workout Hours',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildDayWorkoutBar('Mon', 2.5), // Example data for Monday
-                        _buildDayWorkoutBar('Tue', 3.0), // Example data for Tuesday
-                        _buildDayWorkoutBar('Wed', 2.0), // Example data for Wednesday
-                        _buildDayWorkoutBar('Thu', 2.5), // Example data for Thursday
-                        _buildDayWorkoutBar('Fri', 3.5), // Example data for Friday
-                        _buildDayWorkoutBar('Sat', 4.0), // Example data for Saturday
-                        _buildDayWorkoutBar('Sun', 3.0), // Example data for Sunday
-                      ],
-                    ),
-                  ],
+                      const SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _buildDayWorkoutBar('Mon'),
+                          _buildDayWorkoutBar('Tue'),
+                          _buildDayWorkoutBar('Wed'),
+                          _buildDayWorkoutBar('Thu'),
+                          _buildDayWorkoutBar('Fri'),
+                          _buildDayWorkoutBar('Sat'),
+                          _buildDayWorkoutBar('Sun'),
+                        ],
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () => _showInputDialog(context),
+                        child: const Text('Add Workout Data'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -106,7 +235,8 @@ class ProfileTab extends StatelessWidget {
   Widget _buildBorderedWidget({required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical margin as needed
+      margin: const EdgeInsets.symmetric(
+          vertical: 8.0), // Adjust vertical margin as needed
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -118,26 +248,18 @@ class ProfileTab extends StatelessWidget {
     );
   }
 
-  // Helper method to build workout hour bar for a specific day
-  Widget _buildDayWorkoutBar(String day, double hours) {
-    return Column(
-      children: [
-        Text(
-          day,
-          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 4.0),
-          height: hours * 20.0, // Adjust height based on workout hours
-          width: 30.0,
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: Text(
-            hours.toStringAsFixed(1), // Display hours with one decimal place
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ],
+// Helper method to build workout hour bar for a specific day
+  Widget _buildDayWorkoutBar(String day) {
+    final int hours = workoutData
+        .firstWhere((data) => data.day.toLowerCase() == day.toLowerCase(),
+            orElse: () => WorkoutData(day: day, hours: 0))
+        .hours;
+
+    return CustomPaint(
+      key: ValueKey(
+          day + hours.toString()), // Ensures widget rebuilds when data changes
+      size: Size(30, (hours * 10).toDouble()), // Convert hours to pixels
+      painter: BarChartPainter(hours), // Pass hours to the painter
     );
   }
 }
