@@ -125,9 +125,7 @@ class LoginScreen extends StatelessWidget {
                           await createAccount(email, password);
 
                       // If the user is created, navigate to the profile page
-                      if (user != null) {
-                        Navigator.pushReplacementNamed(context, '/profile');
-                      }
+                      Navigator.pushReplacementNamed(context, '/profile');
                     } catch (e) {
                       // Handle the error
                       print(e);
