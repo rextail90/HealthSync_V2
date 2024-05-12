@@ -64,10 +64,8 @@ class _ExerciseTabState extends State<ExerciseTab> {
                   final List<String> exercises = await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ExerciseTemplatePage(),
                   ));
-                  if (exercises != null) {
-                    // Save the template
-                  }
-                },
+                  // Save the template
+                                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class NutritionTab extends StatelessWidget {
-  const NutritionTab({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,11 +9,11 @@ class NutritionTab extends StatelessWidget {
         backgroundColor: Colors.blue[100],
         title: const Text('Nutrition'),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Enter Nutrition Data:',
               style: TextStyle(fontSize: 20.0),
             ),
@@ -29,6 +27,8 @@ class NutritionTab extends StatelessWidget {
 }
 
 class NutritionForm extends StatefulWidget {
+  const NutritionForm({super.key});
+
   @override
   _NutritionFormState createState() => _NutritionFormState();
 }
@@ -84,7 +84,7 @@ class _NutritionFormState extends State<NutritionForm> {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                content: Container(
+                content: SizedBox(
                   width: 300,
                   height: 300,
                   child: PieChart(
@@ -114,14 +114,8 @@ class PieChart extends StatelessWidget {
   final double proteinGoal;
   final double fatGoal;
 
-  const PieChart({
-    required this.carbs,
-    required this.protein,
-    required this.fat,
-    required this.carbGoal,
-    required this.proteinGoal,
-    required this.fatGoal,
-  });
+  const PieChart(
+      {required this.carbs, required this.protein, required this.fat});
 
   @override
   Widget build(BuildContext context) {

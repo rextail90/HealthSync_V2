@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:healthsync_maybe/screens/exercise_tab.dart';
 
 class ExerciseTemplatePage extends StatefulWidget {
-  const ExerciseTemplatePage({Key? key}) : super(key: key);
+  const ExerciseTemplatePage({super.key});
 
   @override
   _ExerciseTemplatePageState createState() => _ExerciseTemplatePageState();
@@ -15,7 +14,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
     final TextEditingController controller = TextEditingController();
     await showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) { // Use a different context variable here
         return AlertDialog(
           title: const Text('Add Exercise'),
           content: TextField(
@@ -26,16 +25,18 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop(); // Use dialogContext here
               },
             ),
             TextButton(
               child: const Text('Add'),
               onPressed: () {
-                setState(() {
-                  _exercises.add(controller.text);
-                });
-                Navigator.of(context).pop();
+                if (controller.text.isNotEmpty) {
+                  setState(() {
+                    _exercises.add(controller.text);
+                  });
+                  Navigator.of(dialogContext).pop(); // Use dialogContext here
+                }
               },
             ),
           ],
@@ -48,22 +49,20 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  title: const Text('Create New Template'),
-  leading: IconButton(
-    icon: const Icon(Icons.arrow_back),
-    onPressed: () {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      } 
-    },
-  ),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.save),
-      onPressed: () {
-        // Save the template and go back to the previous page
-        Navigator.pop(context, _exercises);
-      },
+        title: const Text('Create New Template'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+              Navigator.pop(context);
+            }
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: () {
+              // Save the template and go back to the previous page
+              Navigator.pop(context, _exercises);
+            },
           ),
         ],
       ),
@@ -76,8 +75,8 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: _showAddExerciseDialog,
+        child: const Icon(Icons.add),
       ),
     );
   }
