@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:healthsync_maybe/screens/exercise_template_page.dart';
 import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
+
 
 class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
@@ -57,7 +59,14 @@ class _ExerciseTabState extends State<ExerciseTab> {
             Align(
               alignment: Alignment.topLeft,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async{
+                  final List<String> exercises = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ExerciseTemplatePage(),
+                  ));
+                  if (exercises != null) {
+                    // Save the template
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
