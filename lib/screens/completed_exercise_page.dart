@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
 
 class CompletedExercisesPage extends StatelessWidget {
   final String duration;
@@ -11,6 +13,13 @@ class CompletedExercisesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Completed Exercises'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Provider.of<TimerProvider>(context, listen: false).reset(); // Resets the timer when navigating back
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -11,8 +11,8 @@ class QuickWorkoutPage extends StatefulWidget {
 }
 
 class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
-  final List<Map<String, String>> _exercises = []; // List to store active exercises
-  final List<Map<String, String>> _completedExercises = []; // List to store completed exercises
+  final List<Map<String, String>> _exercises = [];
+  final List<Map<String, String>> _completedExercises = [];
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
-              timerProvider.stop(); // Stop the timer
+              timerProvider.stop();  // Stop the timer
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -95,8 +95,18 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
       body: Column(
         children: <Widget>[
           Text(timerProvider.durationString, style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
-          ElevatedButton(onPressed: _showAddExerciseDialog, child: const Text('Add Exercise')),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              timerProvider.stop();
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel Workout'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+               textStyle: const TextStyle(color: Colors.white),
+            ),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
