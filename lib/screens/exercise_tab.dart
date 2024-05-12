@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 import 'package:healthsync_maybe/screens/exercise_template_page.dart';
+import 'package:healthsync_maybe/screens/template_workout_page.dart';
+
 
 class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
@@ -86,17 +88,47 @@ class _ExerciseTabState extends State<ExerciseTab> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () async {
-                    List<Map<String, String>>? updatedTemplate = await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ExerciseTemplatePage(template: existingWorkoutTemplates[index])),
+                    bool? startWorkout = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Start Workout'),
+                          content: const Text('Do you want to start the workout?'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('No'),
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Yes'),
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
-                    if (updatedTemplate != null) {
-                      setState(() {
-                        existingWorkoutTemplates[index] = updatedTemplate;
-                      });
+
+                    if (startWorkout == true) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => TemplateWorkoutPage(template: existingWorkoutTemplates[index])),
+                      );
                     }
                   },
-                  child: ListTile(
-                    title: Text(existingWorkoutTemplates[index].map((e) => e['name'] ?? 'No Name').join(', ')),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      title: Text(existingWorkoutTemplates[index].map((e) => e['name'] ?? 'No Name').join(', ')),
+                    ),
                   ),
                 );
               },
