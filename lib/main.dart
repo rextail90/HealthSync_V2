@@ -11,17 +11,22 @@ import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'package:healthsync_maybe/screens/nutrition_data.dart';
+import 'package:healthsync_maybe/providers/history_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
-    NutritionDataProvider(
-      initialData: NutritionData(), // Corrected parameter name here
-      child: ChangeNotifierProvider<TimerProvider>(
-        create: (context) => TimerProvider(),
-        child: const MyApp(), // Your main application widget
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => TimerProvider()),
+        ChangeNotifierProvider(create: (context) => ExerciseHistoryProvider()),
+      ],
+      child: NutritionDataProvider(
+        // This assumes NutritionDataProvider is a widget that requires a child.
+        initialData: NutritionData(),
+        child: const MyApp(),
       ),
     ),
   );
@@ -166,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProfileTab(),
     const NutritionTab(),
     const ExerciseTab(),
-    const HistoryTab(),
+    HistoryTab(),
   ];
 
   void _onTabTapped(int index) {

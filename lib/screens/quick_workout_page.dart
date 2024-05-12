@@ -100,6 +100,8 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
             onPressed: () {
               timerProvider.stop();
               Navigator.pop(context);
+              Provider.of<TimerProvider>(context, listen: false)
+                .reset(); // Resets the timer when navigating back
             },
             child: const Text('Cancel Workout'),
             style: ElevatedButton.styleFrom(
