@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class NutritionTab extends StatelessWidget {
+  const NutritionTab({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +36,9 @@ class _NutritionFormState extends State<NutritionForm> {
   TextEditingController carbsController = TextEditingController();
   TextEditingController proteinController = TextEditingController();
   TextEditingController fatController = TextEditingController();
+  TextEditingController carbGoalController = TextEditingController();
+  TextEditingController proteinGoalController = TextEditingController();
+  TextEditingController fatGoalController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +61,23 @@ class _NutritionFormState extends State<NutritionForm> {
           keyboardType: TextInputType.number,
         ),
         SizedBox(height: 20.0),
+        Text('Enter Your Goals:'),
+        TextFormField(
+          controller: carbGoalController,
+          decoration: InputDecoration(labelText: 'Carbohydrates Goal'),
+          keyboardType: TextInputType.number,
+        ),
+        TextFormField(
+          controller: proteinGoalController,
+          decoration: InputDecoration(labelText: 'Protein Goal'),
+          keyboardType: TextInputType.number,
+        ),
+        TextFormField(
+          controller: fatGoalController,
+          decoration: InputDecoration(labelText: 'Fat Goal'),
+          keyboardType: TextInputType.number,
+        ),
+        SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {
             showDialog(
@@ -68,6 +90,9 @@ class _NutritionFormState extends State<NutritionForm> {
                     carbs: double.parse(carbsController.text),
                     protein: double.parse(proteinController.text),
                     fat: double.parse(fatController.text),
+                    carbGoal: double.parse(carbGoalController.text),
+                    proteinGoal: double.parse(proteinGoalController.text),
+                    fatGoal: double.parse(fatGoalController.text),
                   ),
                 ),
               ),
@@ -84,15 +109,49 @@ class PieChart extends StatelessWidget {
   final double carbs;
   final double protein;
   final double fat;
+  final double carbGoal;
+  final double proteinGoal;
+  final double fatGoal;
 
-  const PieChart(
-      {required this.carbs, required this.protein, required this.fat});
+  const PieChart({
+    required this.carbs,
+    required this.protein,
+    required this.fat,
+    required this.carbGoal,
+    required this.proteinGoal,
+    required this.fatGoal,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(300, 300),
-      painter: PieChartPainter(carbs, protein, fat),
+    return Stack(
+      children: [
+        CustomPaint(
+          size: Size(300, 300),
+          painter: PieChartPainter(
+            carbs: carbs,
+            protein: protein,
+            fat: fat,
+            carbGoal: carbGoal,
+            proteinGoal: proteinGoal,
+            fatGoal: fatGoal,
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Text(
+              'Goals Met',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -101,84 +160,142 @@ class PieChartPainter extends CustomPainter {
   final double carbs;
   final double protein;
   final double fat;
+  final double carbGoal;
+  final double proteinGoal;
+  final double fatGoal;
 
-  PieChartPainter(this.carbs, this.protein, this.fat);
+  PieChartPainter({
+    required this.carbs,
+    required this.protein,
+    required this.fat,
+    required this.carbGoal,
+    required this.proteinGoal,
+    required this.fatGoal,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Calculate segment angles
     double total = carbs + protein + fat;
     double carbsAngle = (carbs / total) * 2 * math.pi;
     double proteinAngle = (protein / total) * 2 * math.pi;
     double fatAngle = (fat / total) * 2 * math.pi;
 
-    Offset center = Offset(size.width / 2, size.height / 2);
-    double radius = size.width / 2;
-    Paint paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = Colors.blue;
-
-    // Draw Carbs segment
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
+    // Draw actual nutrition segments
+    _drawSegment(
+      canvas,
+      size,
       carbsAngle,
-      true,
-      paint,
-    );
-    _drawLabel(canvas, center, radius, -math.pi / 2, carbsAngle, "Carbs",
-        carbs / total);
-
-    paint.color = Colors.green;
-
-    // Draw Protein segment
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2 + carbsAngle,
       proteinAngle,
-      true,
-      paint,
-    );
-    _drawLabel(canvas, center, radius, -math.pi / 2 + carbsAngle, proteinAngle,
-        "Protein", protein / total);
-
-    paint.color = Colors.orange;
-
-    // Draw Fat segment
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2 + carbsAngle + proteinAngle,
       fatAngle,
-      true,
-      paint,
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      "Carbs (${(carbs / carbGoal * 100).toStringAsFixed(1)}%)",
+      "Protein (${(protein / proteinGoal * 100).toStringAsFixed(1)}%)",
+      "Fat (${(fat / fatGoal * 100).toStringAsFixed(1)}%)",
     );
-    _drawLabel(canvas, center, radius, -math.pi / 2 + carbsAngle + proteinAngle,
-        fatAngle, "Fat", fat / total);
   }
 
-  void _drawLabel(Canvas canvas, Offset center, double radius,
-      double startAngle, double sweepAngle, String label, double percentage) {
-    // Calculate label position
-    double labelRadius = radius * 0.7;
-    double labelAngle = startAngle + sweepAngle / 2;
-    double x = center.dx + labelRadius * math.cos(labelAngle);
-    double y = center.dy + labelRadius * math.sin(labelAngle);
+  void _drawSegment(
+    Canvas canvas,
+    Size size,
+    double carbsAngle,
+    double proteinAngle,
+    double fatAngle,
+    Color carbsColor,
+    Color proteinColor,
+    Color fatColor,
+    String carbsLabel,
+    String proteinLabel,
+    String fatLabel,
+  ) {
+    Offset center = Offset(size.width / 2, size.height / 2);
+    double radius = size.width / 2;
+
+    // Draw Carbs segment
+    _drawArc(
+      canvas,
+      center,
+      radius,
+      -math.pi / 2,
+      carbsAngle,
+      carbsColor,
+      carbsLabel,
+    );
+
+    // Draw Protein segment
+    _drawArc(
+      canvas,
+      center,
+      radius,
+      -math.pi / 2 + carbsAngle,
+      proteinAngle,
+      proteinColor,
+      proteinLabel,
+    );
+
+    // Draw Fat segment
+    _drawArc(
+      canvas,
+      center,
+      radius,
+      -math.pi / 2 + carbsAngle + proteinAngle,
+      fatAngle,
+      fatColor,
+      fatLabel,
+    );
+  }
+
+  void _drawArc(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    double startAngle,
+    double sweepAngle,
+    Color color,
+    String label,
+  ) {
+    Paint paint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = color;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      true,
+      paint,
+    );
 
     // Draw label
-    TextSpan span = TextSpan(
-      style: TextStyle(color: Colors.black, fontSize: 14.0),
-      text: '$label\n(${(percentage * 100).toStringAsFixed(1)}%)',
+    final double labelRadius = radius * 0.7;
+    final double labelAngle = startAngle + sweepAngle / 2;
+    final double labelX = center.dx + labelRadius * math.cos(labelAngle);
+    final double labelY = center.dy + labelRadius * math.sin(labelAngle);
+    final TextSpan span = TextSpan(
+      style: TextStyle(
+          color: Colors.black, fontSize: 14.0, fontWeight: FontWeight.bold),
+      text: label,
     );
-    TextPainter tp = TextPainter(
+    final TextPainter tp = TextPainter(
       text: span,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
     );
     tp.layout();
-    tp.paint(canvas, Offset(x - tp.width / 2, y - tp.height / 2));
+    tp.paint(canvas, Offset(labelX - tp.width / 2, labelY - tp.height / 2));
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: NutritionTab(),
+  ));
 }
