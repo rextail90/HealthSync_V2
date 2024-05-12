@@ -18,6 +18,7 @@ void main() async{
       create: (context) => TimerProvider(),
       child: const MyApp(), // Your main application widget
     ),
+    
   );
 }
 
