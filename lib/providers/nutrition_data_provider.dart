@@ -1,18 +1,18 @@
-// nutrition_data_provider.dart
 import 'package:flutter/material.dart';
-import 'package:healthsync_maybe/screens/nutrition_data.dart';
+import 'package:healthsync_maybe/screens/nutrition_data.dart'; // Assuming this file has the NutritionData class
 
 class NutritionDataProvider extends StatefulWidget {
   final Widget child;
-  final NutritionData data; // This is required for initialization
+  final NutritionData initialData;
 
-  NutritionDataProvider({Key? key, required this.child, required this.data})
+  NutritionDataProvider(
+      {Key? key, required this.child, required this.initialData})
       : super(key: key);
 
   static NutritionData of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_NutritionDataInherited>()!
-        .data;
+    _NutritionDataProviderState providerState =
+        context.findAncestorStateOfType<_NutritionDataProviderState>()!;
+    return providerState.data; // Correctly return the data.
   }
 
   @override
@@ -20,38 +20,37 @@ class NutritionDataProvider extends StatefulWidget {
 }
 
 class _NutritionDataProviderState extends State<NutritionDataProvider> {
-  late NutritionData _data;
+  late NutritionData data; // State that holds the nutrition data
 
   @override
   void initState() {
     super.initState();
-    _data = widget.data; // Initialize data from widget
+    data = widget.initialData;
   }
 
   void updateNutritionData(int protein, int carbs, int fats) {
     setState(() {
-      _data = NutritionData(protein: protein, carbs: carbs, fats: fats);
+      data = NutritionData(protein: protein, carbs: carbs, fats: fats);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _NutritionDataInherited(
-      data: _data,
+    return NutritionDataInherited(
+      data: data,
       child: widget.child,
     );
   }
 }
 
-class _NutritionDataInherited extends InheritedWidget {
+class NutritionDataInherited extends InheritedWidget {
   final NutritionData data;
 
-  _NutritionDataInherited({
-    Key? key,
-    required this.data,
-    required Widget child,
-  }) : super(key: key, child: child);
+  NutritionDataInherited({Key? key, required this.data, required Widget child})
+      : super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(_NutritionDataInherited old) => data != old.data;
+  bool updateShouldNotify(NutritionDataInherited oldWidget) {
+    return data != oldWidget.data;
+  }
 }

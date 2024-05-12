@@ -18,7 +18,7 @@ void main() async {
 
   runApp(
     NutritionDataProvider(
-      data: NutritionData(), // Provide an initial empty or default set of data
+      initialData: NutritionData(), // Corrected parameter name here
       child: ChangeNotifierProvider<TimerProvider>(
         create: (context) => TimerProvider(),
         child: const MyApp(), // Your main application widget

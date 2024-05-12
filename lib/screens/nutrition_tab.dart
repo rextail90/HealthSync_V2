@@ -85,26 +85,47 @@ class _NutritionFormState extends State<NutritionForm> {
         const SizedBox(height: 20.0),
         ElevatedButton(
           onPressed: () {
+            // Access the state to update nutrition data
+            NutritionDataProvider.of(context).updateNutritionData(
+              int.parse(proteinController.text.isNotEmpty
+                  ? proteinController.text
+                  : "0"),
+              int.parse(
+                  carbsController.text.isNotEmpty ? carbsController.text : "0"),
+              int.parse(
+                  fatController.text.isNotEmpty ? fatController.text : "0"),
+            );
+
+            // Show the dialog after updating the data
             showDialog(
               context: context,
-              builder: (context) => AlertDialog(
-                content: SizedBox(
-                  width: 300,
-                  height: 300,
-                  child: PieChart(
-                    carbs: double.parse(carbsController.text),
-                    protein: double.parse(proteinController.text),
-                    fat: double.parse(fatController.text),
-                    carbGoal: double.parse(carbGoalController.text),
-                    proteinGoal: double.parse(proteinGoalController.text),
-                    fatGoal: double.parse(fatGoalController.text),
+              builder: (BuildContext context) {
+                // Access the updated data using the provider
+                final updatedData = NutritionDataProvider.of(context);
+                return AlertDialog(
+                  title: const Text("Nutrition Summary"),
+                  content: Container(
+                    width: double.maxFinite,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Carbs: ${updatedData.carbs}g"),
+                        Text("Protein: ${updatedData.protein}g"),
+                        Text("Fats: ${updatedData.fats}g"),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("Close"),
+                    ),
+                  ],
+                );
+              },
             );
-            // Your existing showDialog code can remain here if you still need it
           },
-          child: const Text('Generate Pie Chart'),
+          child: const Text('Update and View Nutrition'),
         ),
       ],
     );
