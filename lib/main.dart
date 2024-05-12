@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static final List<Widget> _tabPages = [
     const ProfileTab(),
-    NutritionTab(),
+    const NutritionTab(),
     const ExerciseTab(),
     const HistoryTab(),
   ];
