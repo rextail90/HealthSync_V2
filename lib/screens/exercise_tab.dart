@@ -25,6 +25,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
         title: const Text('Workouts'),
       ),
       body: SingleChildScrollView(

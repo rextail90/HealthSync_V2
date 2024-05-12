@@ -6,6 +6,7 @@ class NutritionTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
         title: const Text('Nutrition'),
       ),
       body: Center(
