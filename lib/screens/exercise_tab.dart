@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:healthsync_maybe/providers/timer_service.dart';
-import 'package:healthsync_maybe/screens/quick_workout_page.dart';
+import 'package:healthsync_maybe/screens/exercise_template_page.dart';
 import 'package:provider/provider.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
+import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 
-class ExerciseTab extends StatelessWidget {
+
+class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
 
   @override
+  _ExerciseTabState createState() => _ExerciseTabState();
+}
+
+class _ExerciseTabState extends State<ExerciseTab> {
+  void navigateToWorkout(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const QuickWorkoutPage(),
+    ));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final timerService = Provider.of<TimerService>(context);  // Get the TimerService
+    final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
         title: const Text('Workouts'),
       ),
       body: SingleChildScrollView(
@@ -48,7 +60,14 @@ class ExerciseTab extends StatelessWidget {
             Align(
               alignment: Alignment.topLeft,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async{
+                  final List<String> exercises = await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ExerciseTemplatePage(),
+                  ));
+                  if (exercises != null) {
+                    // Save the template
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -65,19 +84,20 @@ class ExerciseTab extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            // Add more widgets as needed
+            const SizedBox(height: 20),
           ],
         ),
       ),
+      bottomSheet: timerProvider.isRunning ? GestureDetector(
+        onTap: () => navigateToWorkout(context),
+        child: Container(
+          height: 50,
+          color: Colors.blue,
+          child: Center(
+            child: Text(timerProvider.durationString),
+          ),
+        ),
+      ) : null,
     );
   }
 }
-
-  Widget _buildWorkoutTemplate(String title, List<String> exercises) {
-    return Card(
-      child: ExpansionTile(
-        title: Text(title),
-        children: exercises.map((exercise) => ListTile(title: Text(exercise))).toList(),
-      ),
-    );
-  }

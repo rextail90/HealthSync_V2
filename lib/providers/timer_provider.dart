@@ -1,13 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
-class TimerService with ChangeNotifier {
+class TimerProvider with ChangeNotifier {
   Timer? _timer;
   Duration _duration = Duration.zero;
+  bool _isRunning = false; // Indicates if the timer is running
 
-  TimerService();
+  bool get isRunning => _isRunning;
 
   void start() {
     if (_timer != null && _timer!.isActive) return;
@@ -15,11 +15,17 @@ class TimerService with ChangeNotifier {
       _duration += const Duration(seconds: 1);
       notifyListeners();
     });
+    _isRunning = true;
+    notifyListeners();
   }
 
   void stop() {
-    _timer?.cancel();
-    notifyListeners();
+    if (_timer != null) {
+      _timer!.cancel();
+      _timer = null;
+      _isRunning = false;
+      notifyListeners();
+    }
   }
 
   void reset() {

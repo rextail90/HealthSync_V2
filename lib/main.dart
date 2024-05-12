@@ -1,8 +1,8 @@
+import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'dart:async';
 import 'package:healthsync_maybe/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:healthsync_maybe/providers/timer_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/profile_tab.dart';
@@ -14,12 +14,11 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    ChangeNotifierProvider<TimerService>(
-        create: (context) => TimerService(),
-        child: const MyApp(),
-    ) 
+    ChangeNotifierProvider<TimerProvider>(
+      create: (context) => TimerProvider(),
+      child: const MyApp(), // Your main application widget
+    ),
   );
-
 }
 
 
@@ -109,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                     }
                 ),
                 ElevatedButton(
-                  child: Text('Create account'),
+                  child: const Text('Create account'),
                   onPressed: () async {
                     final String email = _emailController.text;
                     final String password = _passwordController.text;
@@ -125,6 +124,12 @@ class LoginScreen extends StatelessWidget {
                       // Handle the error
                       print(e);
                     }
+                  },
+                ),
+                ElevatedButton(
+                  child: const Text('Skip'),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/profile');
                   },
                 ),
               ],
@@ -154,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static final List<Widget> _tabPages = [
     const ProfileTab(),
-    const NutritionTab(),
+    NutritionTab(),
     const ExerciseTab(),
     const HistoryTab(),
   ];

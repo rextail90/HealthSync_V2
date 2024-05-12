@@ -8,6 +8,7 @@ class NutritionTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[100],
         title: const Text('Nutrition'),
       ),
       body: Center(
@@ -18,7 +19,7 @@ class NutritionTab extends StatelessWidget {
               'Enter Nutrition Data:',
               style: TextStyle(fontSize: 20.0),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             NutritionForm(),
           ],
         ),
@@ -47,17 +48,17 @@ class _NutritionFormState extends State<NutritionForm> {
       children: [
         TextFormField(
           controller: carbsController,
-          decoration: InputDecoration(labelText: 'Carbohydrates'),
+          decoration: const InputDecoration(labelText: 'Carbohydrates'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: proteinController,
-          decoration: InputDecoration(labelText: 'Protein'),
+          decoration: const InputDecoration(labelText: 'Protein'),
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: fatController,
-          decoration: InputDecoration(labelText: 'Fat'),
+          decoration: const InputDecoration(labelText: 'Fat'),
           keyboardType: TextInputType.number,
         ),
         SizedBox(height: 20.0),
@@ -98,7 +99,7 @@ class _NutritionFormState extends State<NutritionForm> {
               ),
             );
           },
-          child: Text('Generate Pie Chart'),
+          child: const Text('Generate Pie Chart'),
         ),
       ],
     );
