@@ -19,7 +19,7 @@ class HistoryTab extends StatelessWidget {
         itemCount: sessions.length,
         itemBuilder: (context, index) {
           return ExpansionTile(
-            title: Text("Workedout for ${sessions[index]['duration']}"),
+            title: Text("Worked out for ${sessions[index]['duration']}"),
             children: List<Widget>.from(sessions[index]['exercises'].map(
               (exercise) => ListTile(
                 title: Text(exercise['name'] ?? 'No Name'),
