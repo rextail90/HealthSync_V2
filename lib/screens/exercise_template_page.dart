@@ -48,7 +48,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context). pop();
               },
             ),
             TextButton(
@@ -61,7 +61,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
                     'reps': repsController.text,
                   });
                 });
-                Navigator.of(context).pop();
+                Navigator.of(context). pop();
               },
             ),
           ],
@@ -82,7 +82,15 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: () => Navigator.pop(context, _exercises),
+            onPressed: () {
+              if (_exercises.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Add a workout first!')),
+                );
+              } else {
+                Navigator.pop(context, _exercises);
+              }
+            },
           ),
         ],
       ),
@@ -93,6 +101,14 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
             child: ListTile(
               title: Text(_exercises[index]['name'] ?? 'No Name'),
               subtitle: Text('Sets: ${_exercises[index]['sets']}, Reps: ${_exercises[index]['reps']}'),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  setState(() {
+                    _exercises.removeAt(index);
+                  });
+                },
+              ),
             ),
           );
         },

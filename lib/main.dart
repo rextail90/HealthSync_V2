@@ -12,6 +12,7 @@ import 'screens/history_tab.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'package:healthsync_maybe/screens/nutrition_data.dart';
 import 'package:healthsync_maybe/providers/history_provider.dart';
+import 'package:healthsync_maybe/providers/workout_template_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => TimerProvider()),
         ChangeNotifierProvider(create: (context) => ExerciseHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => WorkoutTemplateProvider()), // Add this line
+
       ],
       child: NutritionDataProvider(
         // This assumes NutritionDataProvider is a widget that requires a child.

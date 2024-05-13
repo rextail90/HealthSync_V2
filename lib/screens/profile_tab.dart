@@ -143,7 +143,7 @@ class _ProfileTabState extends State<ProfileTab> {
             children: <Widget>[
               TextField(
                 controller: hoursController,
-                decoration: const InputDecoration(hintText: 'Enter hours'),
+                decoration: const InputDecoration(hintText: 'Enter hours (0-24 only)'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
@@ -165,7 +165,14 @@ class _ProfileTabState extends State<ProfileTab> {
               onPressed: () {
                 final String day = dayController.text.trim();
                 final int hours = int.tryParse(hoursController.text) ?? 0;
-
+                if (hours < 0 || hours > 24) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a valid hour (0-24)'),
+                    ),
+                  );
+                  return;
+                }
                 // Try to find existing data for the day
                 int index = workoutData.indexWhere(
                     (data) => data.day.toLowerCase() == day.toLowerCase());

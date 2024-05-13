@@ -62,6 +62,7 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
             ),
             child: ListTile(
               title: Text(widget.template[index]['name'] ?? 'No Name'),
+              subtitle: Text('Sets: ${widget.template[index]['sets']}, Reps: ${widget.template[index]['reps']}'),
               trailing: IconButton(
                 icon: const Icon(Icons.check),
                 onPressed: () {

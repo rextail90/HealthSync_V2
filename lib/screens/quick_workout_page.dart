@@ -100,8 +100,6 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
             onPressed: () {
               timerProvider.stop();
               Navigator.pop(context);
-              Provider.of<TimerProvider>(context, listen: false)
-                .reset(); // Resets the timer when navigating back
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -120,14 +118,27 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
                   child: ListTile(
                     title: Text(_exercises[index]['name'] ?? 'No Name'),
                     subtitle: Text('Sets: ${_exercises[index]['sets']}, Reps: ${_exercises[index]['reps']}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () {
-                        setState(() {
-                          _completedExercises.add(_exercises[index]);
-                          _exercises.removeAt(index);
-                        });
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.check, color: Colors.green),
+                          onPressed: () {
+                            setState(() {
+                              _completedExercises.add(_exercises[index]);
+                              _exercises.removeAt(index);
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              _exercises.removeAt(index);
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );

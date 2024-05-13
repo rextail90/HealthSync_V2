@@ -4,7 +4,7 @@ import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 import 'package:healthsync_maybe/screens/exercise_template_page.dart';
 import 'package:healthsync_maybe/screens/template_workout_page.dart';
-
+import 'package:healthsync_maybe/providers/workout_template_provider.dart'; // Assuming you have this provider
 
 class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
@@ -14,7 +14,6 @@ class ExerciseTab extends StatefulWidget {
 }
 
 class _ExerciseTabState extends State<ExerciseTab> {
-  List<List<Map<String, String>>> existingWorkoutTemplates = [];
 
   void navigateToTemplateCreation(BuildContext context) async {
     List<Map<String, String>>? newTemplate = await Navigator.of(context).push(
@@ -22,9 +21,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
     );
 
     if (newTemplate != null) {
-      setState(() {
-        existingWorkoutTemplates.add(newTemplate);
-      });
+      Provider.of<WorkoutTemplateProvider>(context, listen: false).addTemplate(newTemplate);
     }
   }
 
@@ -37,6 +34,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
   @override
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context);
+    List<List<Map<String, String>>> existingWorkoutTemplates = Provider.of<WorkoutTemplateProvider>(context).existingWorkoutTemplates;
 
     return Scaffold(
       appBar: AppBar(
@@ -86,6 +84,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
               shrinkWrap: true,
               itemCount: existingWorkoutTemplates.length,
               itemBuilder: (context, index) {
+                final exercises = existingWorkoutTemplates[index];
                 return InkWell(
                   onTap: () async {
                     bool? startWorkout = await showDialog<bool>(
@@ -114,7 +113,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
 
                     if (startWorkout == true) {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => TemplateWorkoutPage(template: existingWorkoutTemplates[index])),
+                        MaterialPageRoute(builder: (context) => TemplateWorkoutPage(template: exercises)),
                       );
                     }
                   },
@@ -127,7 +126,34 @@ class _ExerciseTabState extends State<ExerciseTab> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
-                      title: Text(existingWorkoutTemplates[index].map((e) => e['name'] ?? 'No Name').join(', ')),
+                      title: Column(
+                        children: exercises.map<Widget>((exercise) {
+                          return Text('Name: ${exercise['name']}, Sets: ${exercise['sets']}, Reps: ${exercise['reps']}');
+                        }).toList(),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ExerciseTemplatePage(
+                                    template: exercises,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              Provider.of<WorkoutTemplateProvider>(context, listen: false).deleteTemplate(index);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
