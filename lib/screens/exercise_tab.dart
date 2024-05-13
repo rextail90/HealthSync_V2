@@ -14,6 +14,8 @@ class ExerciseTab extends StatefulWidget {
 }
 
 class _ExerciseTabState extends State<ExerciseTab> {
+  String? lastNavigatedPage;
+  List<Map<String, String>>? lastTemplate;
 
   void navigateToTemplateCreation(BuildContext context) async {
     List<Map<String, String>>? newTemplate = await Navigator.of(context).push(
@@ -22,13 +24,31 @@ class _ExerciseTabState extends State<ExerciseTab> {
 
     if (newTemplate != null) {
       Provider.of<WorkoutTemplateProvider>(context, listen: false).addTemplate(newTemplate);
+      lastNavigatedPage = 'TemplateWorkoutPage';
+      lastTemplate = newTemplate; // Store the last navigated template
     }
   }
 
   void navigateToQuickWorkout(BuildContext context) {
+    lastNavigatedPage = 'QuickWorkoutPage';
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const QuickWorkoutPage()),
     );
+  }
+
+  void navigateToTemplateWorkout(BuildContext context, List<Map<String, String>> template) {
+    lastNavigatedPage = 'TemplateWorkoutPage';
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => TemplateWorkoutPage(template: template)),
+    );
+  }
+
+  void navigateToLastPage(BuildContext context) {
+    if (lastNavigatedPage == 'QuickWorkoutPage') {
+      navigateToQuickWorkout(context);
+    } else if (lastNavigatedPage == 'TemplateWorkoutPage' && lastTemplate != null) {
+      navigateToTemplateWorkout(context, lastTemplate!);
+    }
   }
 
   @override
@@ -164,7 +184,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
         ),
       ),
       bottomSheet: timerProvider.isRunning ? GestureDetector(
-        onTap: () => navigateToQuickWorkout(context),
+        onTap: () => navigateToLastPage(context),
         child: Container(
           height: 50,
           color: Colors.blue,

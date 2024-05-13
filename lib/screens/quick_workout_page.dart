@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/completed_exercise_page.dart';
+import 'package:healthsync_maybe/providers/quick_workout_provider.dart';
 
 class QuickWorkoutPage extends StatefulWidget {
   const QuickWorkoutPage({super.key});
@@ -11,7 +12,6 @@ class QuickWorkoutPage extends StatefulWidget {
 }
 
 class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
-  final List<Map<String, String>> _exercises = [];
   final List<Map<String, String>> _completedExercises = [];
 
   @override
@@ -46,12 +46,10 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
               child: const Text('Add'),
               onPressed: () {
                 if (nameController.text.isNotEmpty) {
-                  setState(() {
-                    _exercises.add({
-                      'name': nameController.text,
-                      'sets': setsController.text,
-                      'reps': repsController.text,
-                    });
+                  Provider.of<QuickWorkoutProvider>(context, listen: false).addExercise({
+                    'name': nameController.text,
+                    'sets': setsController.text,
+                    'reps': repsController.text,
                   });
                   Navigator.of(context).pop();
                 }
@@ -66,6 +64,7 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context);
+    final quickWorkoutProvider = Provider.of<QuickWorkoutProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -100,6 +99,7 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
             onPressed: () {
               timerProvider.stop();
               Navigator.pop(context);
+              timerProvider.reset();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -110,14 +110,14 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
           const SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
-              itemCount: _exercises.length,
+              itemCount: quickWorkoutProvider.exercises.length,
               itemBuilder: (context, index) {
                 return Card(
                   margin: const EdgeInsets.all(8),
                   elevation: 2,
                   child: ListTile(
-                    title: Text(_exercises[index]['name'] ?? 'No Name'),
-                    subtitle: Text('Sets: ${_exercises[index]['sets']}, Reps: ${_exercises[index]['reps']}'),
+                    title: Text(quickWorkoutProvider.exercises[index]['name'] ?? 'No Name'),
+                    subtitle: Text('Sets: ${quickWorkoutProvider.exercises[index]['sets']}, Reps: ${quickWorkoutProvider.exercises[index]['reps']}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -125,17 +125,15 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
                           icon: const Icon(Icons.check, color: Colors.green),
                           onPressed: () {
                             setState(() {
-                              _completedExercises.add(_exercises[index]);
-                              _exercises.removeAt(index);
+                              _completedExercises.add(quickWorkoutProvider.exercises[index]);
+                              quickWorkoutProvider.removeExercise(index);
                             });
                           },
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {
-                            setState(() {
-                              _exercises.removeAt(index);
-                            });
+                            quickWorkoutProvider.removeExercise(index);
                           },
                         ),
                       ],
