@@ -14,4 +14,9 @@ class WorkoutTemplateProvider with ChangeNotifier {
   _existingWorkoutTemplates.removeAt(index);
   notifyListeners();
 }
+
+void updateTemplate(int index, List<Map<String, String>> newTemplate) {
+  _existingWorkoutTemplates[index] = newTemplate;
+  notifyListeners();
+}
 }

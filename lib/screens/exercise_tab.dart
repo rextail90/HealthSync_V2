@@ -155,21 +155,11 @@ class _ExerciseTabState extends State<ExerciseTab> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ExerciseTemplatePage(
-                                    template: exercises,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
                               Provider.of<WorkoutTemplateProvider>(context, listen: false).deleteTemplate(index);
+                              timerProvider.reset();
+                              timerProvider.stop();
                             },
                           ),
                         ],

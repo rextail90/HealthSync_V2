@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class QuickWorkoutProvider with ChangeNotifier {
-  List<Map<String, String>> _exercises = [];
+  final List<Map<String, String>> _exercises = [];
 
   List<Map<String, String>> get exercises => _exercises;
 
