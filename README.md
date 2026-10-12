@@ -55,20 +55,17 @@ The workout timer is a single shared provider. That is what lets the timer keep 
 
 ## Getting started
 
-**Prerequisites:** [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.19 or newer, and a device or emulator.
+**Prerequisites:** [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.19 or newer, a device or emulator, and a [Firebase](https://console.firebase.google.com/) project with Email/Password sign-in enabled.
+
+Firebase config files are not committed, so you generate your own:
 
 ```bash
 git clone https://github.com/rextail90/HealthSync_V2.git
 cd HealthSync_V2
 flutter pub get
-flutter run
-```
-
-The repo is already wired to the project's Firebase app. To point it at your own Firebase project instead, enable Email/Password sign-in in the Firebase console, then run:
-
-```bash
 dart pub global activate flutterfire_cli
-flutterfire configure
+flutterfire configure   # creates lib/firebase_options.dart and platform config files
+flutter run
 ```
 
 ## Testing
