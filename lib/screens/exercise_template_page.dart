@@ -1,73 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:healthsync_maybe/widgets/add_exercise_dialog.dart';
 
 class ExerciseTemplatePage extends StatefulWidget {
-  final List<Map<String, String>>? template;
-
-  const ExerciseTemplatePage({super.key, this.template});
+  const ExerciseTemplatePage({super.key});
 
   @override
-  _ExerciseTemplatePageState createState() => _ExerciseTemplatePageState();
+  State<ExerciseTemplatePage> createState() => _ExerciseTemplatePageState();
 }
 
 class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
-  late List<Map<String, String>> _exercises;
+  final List<Map<String, String>> _exercises = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _exercises = widget.template ?? [];
-  }
-
-  Future<void> _showAddExerciseDialog() async {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController setsController = TextEditingController();
-    final TextEditingController repsController = TextEditingController();
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Exercise'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(hintText: 'Enter exercise name'),
-              ),
-              TextField(
-                controller: setsController,
-                decoration: const InputDecoration(hintText: 'Enter number of sets'),
-              ),
-              TextField(
-                controller: repsController,
-                decoration: const InputDecoration(hintText: 'Enter number of reps'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context). pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Add'),
-              onPressed: () {
-                setState(() {
-                  _exercises.add({
-                    'name': nameController.text,
-                    'sets': setsController.text,
-                    'reps': repsController.text,
-                  });
-                });
-                Navigator.of(context). pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _addExercise() async {
+    final exercise = await showAddExerciseDialog(context);
+    if (exercise != null) setState(() => _exercises.add(exercise));
   }
 
   @override
@@ -75,10 +21,6 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create New Template'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -96,25 +38,23 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
       ),
       body: ListView.builder(
         itemCount: _exercises.length,
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (context, index) {
+          final exercise = _exercises[index];
           return Card(
             child: ListTile(
-              title: Text(_exercises[index]['name'] ?? 'No Name'),
-              subtitle: Text('Sets: ${_exercises[index]['sets']}, Reps: ${_exercises[index]['reps']}'),
+              title: Text(exercise['name'] ?? 'No Name'),
+              subtitle:
+                  Text('Sets: ${exercise['sets']}, Reps: ${exercise['reps']}'),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    _exercises.removeAt(index);
-                  });
-                },
+                onPressed: () => setState(() => _exercises.removeAt(index)),
               ),
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddExerciseDialog,
+        onPressed: _addExercise,
         child: const Icon(Icons.add),
       ),
     );

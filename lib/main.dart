@@ -1,19 +1,17 @@
-import 'package:healthsync_maybe/providers/timer_provider.dart';
-import 'dart:async';
-import 'package:healthsync_maybe/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/profile_tab.dart';
-import 'screens/nutrition_tab.dart';
+import 'package:healthsync_maybe/firebase_options.dart';
+import 'package:healthsync_maybe/providers/history_provider.dart';
+import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
+import 'package:healthsync_maybe/providers/quick_workout_provider.dart';
+import 'package:healthsync_maybe/providers/timer_provider.dart';
+import 'package:healthsync_maybe/providers/workout_template_provider.dart';
 import 'screens/exercise_tab.dart';
 import 'screens/history_tab.dart';
-import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
-import 'package:healthsync_maybe/screens/nutrition_data.dart';
-import 'package:healthsync_maybe/providers/history_provider.dart';
-import 'package:healthsync_maybe/providers/workout_template_provider.dart';
-import 'package:healthsync_maybe/providers/quick_workout_provider.dart';
+import 'screens/nutrition_tab.dart';
+import 'screens/profile_tab.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,16 +20,13 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => TimerProvider()),
-        ChangeNotifierProvider(create: (context) => ExerciseHistoryProvider()),
-        ChangeNotifierProvider(create: (context) => WorkoutTemplateProvider()), // Add this line
-        ChangeNotifierProvider(create: (context) => QuickWorkoutProvider()), // Add this line
+        ChangeNotifierProvider(create: (_) => TimerProvider()),
+        ChangeNotifierProvider(create: (_) => ExerciseHistoryProvider()),
+        ChangeNotifierProvider(create: (_) => WorkoutTemplateProvider()),
+        ChangeNotifierProvider(create: (_) => QuickWorkoutProvider()),
+        ChangeNotifierProvider(create: (_) => NutritionDataProvider()),
       ],
-      child: NutritionDataProvider(
-        // This assumes NutritionDataProvider is a widget that requires a child.
-        initialData: NutritionData(),
-        child: const MyApp(),
-      ),
+      child: const MyApp(),
     ),
   );
 }
@@ -42,16 +37,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'My App',
-        initialRoute: '/',
-        routes: {
-          '/': (context) => LoginScreen(),
-          '/profile': (context) => const MyHomePage(),
-        },
-        theme: ThemeData(
-          scaffoldBackgroundColor:
-              Colors.blue[100], // Set the global background color here
-        ));
+      title: 'HealthSync',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/profile': (context) => const MyHomePage(),
+      },
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.blue[100],
+        appBarTheme: AppBarTheme(backgroundColor: Colors.blue[100]),
+      ),
+    );
   }
 }
 
@@ -63,90 +59,66 @@ class LoginScreen extends StatelessWidget {
 
   LoginScreen({super.key});
 
-  Future<UserCredential> signInWithEmailPassword(
-      String email, String password) async {
-    return await _auth.signInWithEmailAndPassword(
-        email: email, password: password);
+  Future<void> _submit(
+      BuildContext context,
+      Future<UserCredential> Function(
+              {required String email, required String password})
+          action) async {
+    if (!_formKey.currentState!.validate()) return;
+    try {
+      await action(
+          email: _emailController.text.trim(),
+          password: _passwordController.text);
+      if (context.mounted) Navigator.pushReplacementNamed(context, '/profile');
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.message ?? 'Authentication failed')));
+      }
+    }
   }
 
-  Future<UserCredential> createAccount(String email, String password) async {
-    return await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-  }
+  String? _required(String? value, String field) =>
+      (value == null || value.isEmpty) ? 'Please enter your $field' : null;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[100],
-      appBar: AppBar(
-        backgroundColor: Colors.blue[100],
-        title: const Text('Login'),
-      ),
-      body: Container(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-                ElevatedButton(
-                    child: const Text('Login'),
-                    onPressed: () async {
-                      final String email = _emailController.text;
-                      final String password = _passwordController.text;
-                      final UserCredential user =
-                          await signInWithEmailPassword(email, password);
-
-                      // If the user is signed in, navigate to the profile page
-                      Navigator.pushReplacementNamed(context, '/profile');
-                                        }),
-                ElevatedButton(
-                  child: const Text('Create account'),
-                  onPressed: () async {
-                    final String email = _emailController.text;
-                    final String password = _passwordController.text;
-
-                    try {
-                      final UserCredential user =
-                          await createAccount(email, password);
-
-                      // If the user is created, navigate to the profile page
-                      Navigator.pushReplacementNamed(context, '/profile');
-                    } catch (e) {
-                      // Handle the error
-                      print(e);
-                    }
-                  },
-                ),
-                ElevatedButton(
-                  child: const Text('Skip'),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/profile');
-                  },
-                ),
-              ],
-            ),
+      appBar: AppBar(title: const Text('Login')),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (v) => _required(v, 'email'),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (v) => _required(v, 'password'),
+              ),
+              ElevatedButton(
+                child: const Text('Login'),
+                onPressed: () =>
+                    _submit(context, _auth.signInWithEmailAndPassword),
+              ),
+              ElevatedButton(
+                child: const Text('Create account'),
+                onPressed: () =>
+                    _submit(context, _auth.createUserWithEmailAndPassword),
+              ),
+              ElevatedButton(
+                child: const Text('Skip'),
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/profile'),
+              ),
+            ],
           ),
         ),
       ),
@@ -158,65 +130,45 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  // Colors for BottomNavigationBar
-  final Color _backgroundColor = Colors.white;
-  final Color _selectedItemColor = Colors.blue;
-  final Color? _unselectedItemColor = Colors.grey[400];
-
-  static final List<Widget> _tabPages = [
-    const ProfileTab(),
-    const NutritionTab(),
-    const ExerciseTab(),
-    const HistoryTab(),
-  ];
-
-  void _onTabTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[100],
         title: const Text(
           'HealthSync',
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
         ),
       ),
-      body: _tabPages[_selectedIndex],
+      // IndexedStack keeps each tab's state alive when switching tabs.
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          ProfileTab(),
+          NutritionTab(),
+          ExerciseTab(),
+          HistoryTab(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        backgroundColor: _backgroundColor, // Set background color
-        selectedItemColor: _selectedItemColor, // Set color of selected item
-        unselectedItemColor:
-            _unselectedItemColor, // Set color of unselected items
-        onTap: _onTabTapped,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey[400],
+        onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+              icon: Icon(Icons.food_bank), label: 'Nutrition'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.food_bank),
-            label: 'Nutrition',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: 'Exercise',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
+              icon: Icon(Icons.fitness_center), label: 'Exercise'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
       ),
     );

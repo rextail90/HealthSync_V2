@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
-import 'dart:math' as math;
+import 'package:healthsync_maybe/widgets/macro_pie_chart.dart';
 
 class NutritionTab extends StatelessWidget {
   const NutritionTab({super.key});
@@ -8,22 +9,18 @@ class NutritionTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[100],
-        title: const Text('Nutrition'),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Enter Nutrition Data:',
-              style: TextStyle(fontSize: 20.0),
-            ),
-            SizedBox(height: 20.0),
-            NutritionForm(),
-          ],
-        ),
+      appBar: AppBar(title: const Text('Nutrition')),
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: const [
+          Text(
+            'Enter Nutrition Data:',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20.0),
+          ),
+          SizedBox(height: 20.0),
+          NutritionForm(),
+        ],
       ),
     );
   }
@@ -33,334 +30,125 @@ class NutritionForm extends StatefulWidget {
   const NutritionForm({super.key});
 
   @override
-  _NutritionFormState createState() => _NutritionFormState();
+  State<NutritionForm> createState() => _NutritionFormState();
 }
 
 class _NutritionFormState extends State<NutritionForm> {
-  TextEditingController carbsController = TextEditingController();
-  TextEditingController proteinController = TextEditingController();
-  TextEditingController fatController = TextEditingController();
-  TextEditingController carbGoalController = TextEditingController();
-  TextEditingController proteinGoalController = TextEditingController();
-  TextEditingController fatGoalController = TextEditingController();
+  final carbsController = TextEditingController();
+  final proteinController = TextEditingController();
+  final fatController = TextEditingController();
+  final carbGoalController = TextEditingController();
+  final proteinGoalController = TextEditingController();
+  final fatGoalController = TextEditingController();
+
+  List<TextEditingController> get _all => [
+        carbsController,
+        proteinController,
+        fatController,
+        carbGoalController,
+        proteinGoalController,
+        fatGoalController,
+      ];
+
+  @override
+  void dispose() {
+    for (final c in _all) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _field(TextEditingController controller, String label) =>
+      TextFormField(
+        controller: controller,
+        decoration: InputDecoration(labelText: label),
+        keyboardType: TextInputType.number,
+      );
+
+  void _showMessage(String title, Widget content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: content,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submit() {
+    final values = _all.map((c) => int.tryParse(c.text.trim())).toList();
+    // Goals divide the intake, so they must be positive; intake may be 0.
+    if (values.any((v) => v == null || v < 0) ||
+        values.skip(3).any((v) => v == 0)) {
+      _showMessage('Error',
+          const Text('Please enter whole numbers for all fields (goals > 0).'));
+      return;
+    }
+    final [carbs, protein, fat, carbGoal, proteinGoal, fatGoal] =
+        values.cast<int>();
+
+    context.read<NutritionDataProvider>().update(protein, carbs, fat);
+
+    String pct(int value, int goal) =>
+        (value / goal * 100).toStringAsFixed(1);
+    _showMessage(
+      'How far you are from Goals:',
+      SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Carbs: ${carbs}g'),
+            Text('Protein: ${protein}g'),
+            Text('Fats: ${fat}g'),
+            const SizedBox(height: 20),
+            MacroPieChart(slices: [
+              (
+                value: carbs.toDouble(),
+                color: Colors.green,
+                label: 'Carbs\n${pct(carbs, carbGoal)}%'
+              ),
+              (
+                value: protein.toDouble(),
+                color: Colors.blue,
+                label: 'Protein\n${pct(protein, proteinGoal)}%'
+              ),
+              (
+                value: fat.toDouble(),
+                color: Colors.orange,
+                label: 'Fat\n${pct(fat, fatGoal)}%'
+              ),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TextFormField(
-          controller: carbsController,
-          decoration: const InputDecoration(labelText: 'Carbohydrates'),
-          keyboardType: TextInputType.number,
-        ),
-        TextFormField(
-          controller: proteinController,
-          decoration: const InputDecoration(labelText: 'Protein'),
-          keyboardType: TextInputType.number,
-        ),
-        TextFormField(
-          controller: fatController,
-          decoration: const InputDecoration(labelText: 'Fat'),
-          keyboardType: TextInputType.number,
-        ),
+        _field(carbsController, 'Carbohydrates'),
+        _field(proteinController, 'Protein'),
+        _field(fatController, 'Fat'),
         const SizedBox(height: 20.0),
         const Text('Enter Your Goals:'),
-        TextFormField(
-          controller: carbGoalController,
-          decoration: const InputDecoration(labelText: 'Carbohydrates Goal'),
-          keyboardType: TextInputType.number,
-        ),
-        TextFormField(
-          controller: proteinGoalController,
-          decoration: const InputDecoration(labelText: 'Protein Goal'),
-          keyboardType: TextInputType.number,
-        ),
-        TextFormField(
-          controller: fatGoalController,
-          decoration: const InputDecoration(labelText: 'Fat Goal'),
-          keyboardType: TextInputType.number,
-        ),
+        _field(carbGoalController, 'Carbohydrates Goal'),
+        _field(proteinGoalController, 'Protein Goal'),
+        _field(fatGoalController, 'Fat Goal'),
         const SizedBox(height: 20.0),
         ElevatedButton(
-          onPressed: () {
-            // Access the state to update nutrition data
-            if (carbsController.text.isEmpty ||
-                proteinController.text.isEmpty ||
-                fatController.text.isEmpty 
-                || carbGoalController.text.isEmpty ||
-                proteinGoalController.text.isEmpty ||
-                fatGoalController.text.isEmpty) {
-              showDialog(context: context, builder: (BuildContext context){
-                return AlertDialog(
-                  title: const Text("Error"),
-                  content: const Text("Please enter all nutrition data!"),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text("Close"),
-                      onPressed: () { Navigator.of(context).pop();
-                      }
-                    ),
-                  ],
-                );
-              }
-              );
-              throw Exception("Please enter all nutrition data");
-            } else {
-            NutritionDataProvider.of(context).updateNutritionData(
-              int.parse(proteinController.text.isNotEmpty
-                  ? proteinController.text
-                  : "0"),
-              int.parse(
-                  carbsController.text.isNotEmpty ? carbsController.text : "0"),
-              int.parse(
-                  fatController.text.isNotEmpty ? fatController.text : "0"),
-            );
-            }
-
-            // Show the dialog after updating the data
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                // Access the updated data using the provider
-                final updatedData = NutritionDataProvider.of(context);
-                return AlertDialog(
-                  title: const Text("How far you are from Goals:"),
-                  content: SizedBox(
-                    width: double.maxFinite,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("Carbs: ${updatedData.carbs}g"),
-                        Text("Protein: ${updatedData.protein}g"),
-                        Text("Fats: ${updatedData.fats}g"),
-                        const SizedBox(height: 20),
-                        SizedBox(
-                            width: 200, // Define a fixed size for the pie chart
-                            height: 200,
-                            child: CustomPaint(
-                              painter: PieChartPainter(
-                                carbs: double.parse(carbsController.text),
-                                protein: double.parse(proteinController.text),
-                                fat: double.parse(fatController.text),
-                                carbGoal: double.parse(carbGoalController.text),
-                                proteinGoal:
-                                    double.parse(proteinGoalController.text),
-                                fatGoal: double.parse(fatGoalController.text),
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text("Close"),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+          onPressed: _submit,
           child: const Text('Update and View Nutrition'),
         ),
       ],
     );
   }
-}
-
-class PieChart extends StatelessWidget {
-  final double carbs;
-  final double protein;
-  final double fat;
-  final double carbGoal;
-  final double proteinGoal;
-  final double fatGoal;
-
-  const PieChart({
-    super.key,
-    required this.carbs,
-    required this.protein,
-    required this.fat,
-    required this.carbGoal,
-    required this.proteinGoal,
-    required this.fatGoal,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CustomPaint(
-          size: const Size(300, 300),
-          painter: PieChartPainter(
-            carbs: carbs,
-            protein: protein,
-            fat: fat,
-            carbGoal: carbGoal,
-            proteinGoal: proteinGoal,
-            fatGoal: fatGoal,
-          ),
-        ),
-        const Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Text(
-              'Goals Met',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class PieChartPainter extends CustomPainter {
-  final double carbs;
-  final double protein;
-  final double fat;
-  final double carbGoal;
-  final double proteinGoal;
-  final double fatGoal;
-
-  PieChartPainter({
-    required this.carbs,
-    required this.protein,
-    required this.fat,
-    required this.carbGoal,
-    required this.proteinGoal,
-    required this.fatGoal,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Calculate segment angles
-    double total = carbs + protein + fat;
-    double carbsAngle = (carbs / total) * 2 * math.pi;
-    double proteinAngle = (protein / total) * 2 * math.pi;
-    double fatAngle = (fat / total) * 2 * math.pi;
-
-    // Draw actual nutrition segments
-    _drawSegment(
-      canvas,
-      size,
-      carbsAngle,
-      proteinAngle,
-      fatAngle,
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      "Carbs (${(carbs / carbGoal * 100).toStringAsFixed(1)}%)",
-      "Protein (${(protein / proteinGoal * 100).toStringAsFixed(1)}%)",
-      "Fat (${(fat / fatGoal * 100).toStringAsFixed(1)}%)",
-    );
-  }
-
-  void _drawSegment(
-    Canvas canvas,
-    Size size,
-    double carbsAngle,
-    double proteinAngle,
-    double fatAngle,
-    Color carbsColor,
-    Color proteinColor,
-    Color fatColor,
-    String carbsLabel,
-    String proteinLabel,
-    String fatLabel,
-  ) {
-    Offset center = Offset(size.width / 2, size.height / 2);
-    double radius = size.width / 2;
-
-    // Draw Carbs segment
-    _drawArc(
-      canvas,
-      center,
-      radius,
-      -math.pi / 2,
-      carbsAngle,
-      carbsColor,
-      carbsLabel,
-    );
-
-    // Draw Protein segment
-    _drawArc(
-      canvas,
-      center,
-      radius,
-      -math.pi / 2 + carbsAngle,
-      proteinAngle,
-      proteinColor,
-      proteinLabel,
-    );
-
-    // Draw Fat segment
-    _drawArc(
-      canvas,
-      center,
-      radius,
-      -math.pi / 2 + carbsAngle + proteinAngle,
-      fatAngle,
-      fatColor,
-      fatLabel,
-    );
-  }
-
-  void _drawArc(
-    Canvas canvas,
-    Offset center,
-    double radius,
-    double startAngle,
-    double sweepAngle,
-    Color color,
-    String label,
-  ) {
-    Paint paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = color;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      true,
-      paint,
-    );
-
-    // Draw label
-    final double labelRadius = radius * 0.7;
-    final double labelAngle = startAngle + sweepAngle / 2;
-    final double labelX = center.dx + labelRadius * math.cos(labelAngle);
-    final double labelY = center.dy + labelRadius * math.sin(labelAngle);
-    final TextSpan span = TextSpan(
-      style: const TextStyle(
-          color: Colors.black, fontSize: 14.0, fontWeight: FontWeight.bold),
-      text: label,
-    );
-    final TextPainter tp = TextPainter(
-      text: span,
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-    tp.layout();
-    tp.paint(canvas, Offset(labelX - tp.width / 2, labelY - tp.height / 2));
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: NutritionTab(),
-  ));
 }

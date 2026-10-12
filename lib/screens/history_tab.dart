@@ -7,26 +7,25 @@ class HistoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> sessions =
-        Provider.of<ExerciseHistoryProvider>(context).completedSessions;
+    final sessions = context.watch<ExerciseHistoryProvider>().completedSessions;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Exercise History"),
-        backgroundColor: Colors.blue[100], // Change to your desired color
-      ),
+      appBar: AppBar(title: const Text("Exercise History")),
       body: ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (context, index) {
+          final session = sessions[index];
+          final exercises = session['exercises'] as List<Map<String, String>>;
           return ExpansionTile(
-            title: Text("Worked out for ${sessions[index]['duration']}"),
-            children: List<Widget>.from(sessions[index]['exercises'].map(
-              (exercise) => ListTile(
-                title: Text(exercise['name'] ?? 'No Name'),
-                subtitle: Text(
-                    'Sets: ${exercise['sets']}, Reps: ${exercise['reps']}'),
-              ),
-            )),
+            title: Text("Worked out for ${session['duration']}"),
+            children: [
+              for (final exercise in exercises)
+                ListTile(
+                  title: Text(exercise['name'] ?? 'No Name'),
+                  subtitle: Text(
+                      'Sets: ${exercise['sets']}, Reps: ${exercise['reps']}'),
+                ),
+            ],
           );
         },
       ),

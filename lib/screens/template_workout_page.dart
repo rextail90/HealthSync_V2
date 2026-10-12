@@ -8,7 +8,7 @@ class TemplateWorkoutPage extends StatefulWidget {
   const TemplateWorkoutPage({super.key, required this.template});
 
   @override
-  _TemplateWorkoutPageState createState() => _TemplateWorkoutPageState();
+  State<TemplateWorkoutPage> createState() => _TemplateWorkoutPageState();
 }
 
 class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
@@ -17,12 +17,13 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<TimerProvider>(context, listen: false).start();
+    context.read<TimerProvider>().start();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    TimerProvider timerProvider = Provider.of<TimerProvider>(context);
+    final durationString =
+        context.select<TimerProvider, String>((t) => t.durationString);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,48 +31,34 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Current Workout'),
-            Text(timerProvider.durationString),  // Display the current time from the TimerProvider
+            Text(durationString),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: () {
-              timerProvider.stop();  // Stop the timer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CompletedExercisesPage(
-                    duration: timerProvider.durationString,
-                    completedExercises: _completedExercises,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => finishWorkout(context, _completedExercises),
           ),
         ],
       ),
       body: ListView.builder(
         itemCount: widget.template.length,
         itemBuilder: (context, index) {
+          final exercise = widget.template[index];
+          final done = _completedExercises.contains(exercise);
           return Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                color: _completedExercises.contains(widget.template[index]) ? Colors.green : Colors.grey,
-              ),
+              border: Border.all(color: done ? Colors.green : Colors.grey),
             ),
             child: ListTile(
-              title: Text(widget.template[index]['name'] ?? 'No Name'),
-              subtitle: Text('Sets: ${widget.template[index]['sets']}, Reps: ${widget.template[index]['reps']}'),
+              title: Text(exercise['name'] ?? 'No Name'),
+              subtitle:
+                  Text('Sets: ${exercise['sets']}, Reps: ${exercise['reps']}'),
               trailing: IconButton(
                 icon: const Icon(Icons.check),
-                onPressed: () {
-                  setState(() {
-                    if (!_completedExercises.contains(widget.template[index])) {
-                      _completedExercises.add(widget.template[index]);
-                    }
-                  });
-                },
+                onPressed: done
+                    ? null
+                    : () => setState(() => _completedExercises.add(exercise)),
               ),
             ),
           );
