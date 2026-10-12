@@ -95,8 +95,7 @@ class _NutritionFormState extends State<NutritionForm> {
 
     context.read<NutritionDataProvider>().update(protein, carbs, fat);
 
-    String pct(int value, int goal) =>
-        (value / goal * 100).toStringAsFixed(1);
+    String pct(int value, int goal) => (value / goal * 100).toStringAsFixed(1);
     _showMessage(
       'How far you are from Goals:',
       SizedBox(

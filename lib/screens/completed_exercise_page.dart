@@ -44,8 +44,11 @@ class CompletedExercisesPage extends StatelessWidget {
             child: Text('Duration: $duration',
                 style: Theme.of(context).textTheme.titleLarge),
           ),
-          const Text('Here are your stats:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Here are your stats:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: completedExercises.length,

@@ -48,9 +48,8 @@ class _ProfileTabState extends State<ProfileTab> {
             child: const Text('Add'),
             onPressed: () {
               final input = dayController.text.trim().toLowerCase();
-              final day = _days
-                  .where((d) => d.toLowerCase() == input)
-                  .firstOrNull;
+              final day =
+                  _days.where((d) => d.toLowerCase() == input).firstOrNull;
               final hours = int.tryParse(hoursController.text.trim());
               if (day == null || hours == null || hours < 0 || hours > 24) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -168,14 +167,14 @@ class _ProfileTabState extends State<ProfileTab> {
     final hours = _hoursByDay[day] ?? 0;
     return Column(
       children: [
+        if (hours > 0) Text('$hours'),
         Container(
           width: 30,
-          height: hours * 10.0,
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: hours > 0
-              ? Text('$hours', style: const TextStyle(color: Colors.white))
-              : null,
+          height: hours * 20.0,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
         Text(day),
       ],

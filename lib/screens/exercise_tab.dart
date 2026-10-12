@@ -18,7 +18,8 @@ class _ExerciseTabState extends State<ExerciseTab> {
   List<Map<String, String>>? _activeTemplate;
 
   Future<void> _createTemplate() async {
-    final newTemplate = await Navigator.of(context).push<List<Map<String, String>>>(
+    final newTemplate =
+        await Navigator.of(context).push<List<Map<String, String>>>(
       MaterialPageRoute(builder: (_) => const ExerciseTemplatePage()),
     );
     if (newTemplate != null && mounted) {
@@ -76,13 +77,14 @@ class _ExerciseTabState extends State<ExerciseTab> {
     return Scaffold(
       appBar: AppBar(title: const Text('Workouts')),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children: <Widget>[
           const SizedBox(height: 20),
           Center(child: _bigButton('Create New Template', _createTemplate)),
           const SizedBox(height: 20),
           Center(
-              child: _bigButton(
-                  'Start Quick Workout', () => _startWorkout(null))),
+              child:
+                  _bigButton('Start Quick Workout', () => _startWorkout(null))),
           const SizedBox(height: 20),
           const Text(
             'Existing Workout Templates',
@@ -92,6 +94,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
             InkWell(
               onTap: () => _confirmStart(exercises),
               child: Container(
+                margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 2),
                   borderRadius: BorderRadius.circular(10),

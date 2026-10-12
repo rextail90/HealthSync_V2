@@ -51,11 +51,13 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
               border: Border.all(color: done ? Colors.green : Colors.grey),
             ),
             child: ListTile(
+              tileColor: done ? Colors.green[100] : null,
               title: Text(exercise['name'] ?? 'No Name'),
               subtitle:
                   Text('Sets: ${exercise['sets']}, Reps: ${exercise['reps']}'),
               trailing: IconButton(
-                icon: const Icon(Icons.check),
+                icon: Icon(done ? Icons.check_circle : Icons.check),
+                disabledColor: Colors.green,
                 onPressed: done
                     ? null
                     : () => setState(() => _completedExercises.add(exercise)),

@@ -47,7 +47,8 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
       body: Column(
         children: <Widget>[
           Text(timerProvider.durationString,
-              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {

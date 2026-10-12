@@ -4,6 +4,12 @@ A cross-platform fitness tracker built with Flutter and Firebase. You can log wo
 
 Built by a team of students in May 2024. See the [contributors page](https://github.com/rextail90/HealthSync_V2/graphs/contributors) for who worked on it.
 
+## Screenshots
+
+| Profile | Nutrition goals | Template builder | Live workout | History |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/profile.png" width="180" alt="Profile dashboard with macro pie chart and weekly workout bars"> | <img src="docs/screenshots/nutrition.png" width="180" alt="Nutrition goals dialog with pie chart"> | <img src="docs/screenshots/template.png" width="180" alt="Workout template builder"> | <img src="docs/screenshots/workout.png" width="180" alt="Running workout with timer and completed exercises"> | <img src="docs/screenshots/history.png" width="180" alt="Workout history"> |
+
 ## Features
 
 - **Accounts.** Email/password sign-up and login through Firebase Authentication. There is also a guest "Skip" mode.
@@ -12,7 +18,7 @@ Built by a team of students in May 2024. See the [contributors page](https://git
 - **Persistent timer.** If you leave a workout screen, the timer keeps running and a bar at the bottom of the Exercise tab takes you back.
 - **Workout history.** Every finished session is saved with its duration and completed exercises.
 - **Nutrition tracking.** Enter protein, carbs and fat with daily goals and see a pie chart of how close you are to each goal.
-- **Profile dashboard.** Today's macro breakdown and a weekly workout-hours bar chart, both drawn with `CustomPainter`.
+- **Profile dashboard.** Today's macro breakdown as a pie chart (drawn with `CustomPainter`) and a weekly workout-hours bar chart.
 
 ## Tech stack
 
@@ -21,7 +27,7 @@ Built by a team of students in May 2024. See the [contributors page](https://git
 | UI | Flutter (Material 3), Dart 3 |
 | State | [`provider`](https://pub.dev/packages/provider) (`ChangeNotifier`) |
 | Auth | Firebase Authentication |
-| Charts | Hand-written `CustomPainter`, no chart library |
+| Charts | Built by hand (`CustomPainter` pie chart, widget-based bar chart), no chart library |
 | Platforms | Android, iOS, web, macOS, Windows |
 
 ## Project structure
