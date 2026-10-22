@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'package:healthsync_maybe/screens/nutrition_tab.dart';
 import 'package:healthsync_maybe/widgets/macro_pie_chart.dart';
@@ -18,7 +19,9 @@ void main() {
   });
 
   Future<NutritionDataProvider> pumpNutritionTab(WidgetTester tester) async {
-    final provider = NutritionDataProvider();
+    SharedPreferences.setMockInitialValues({});
+    final provider =
+        NutritionDataProvider(await SharedPreferences.getInstance());
     await tester.pumpWidget(ChangeNotifierProvider.value(
       value: provider,
       child: const MaterialApp(home: NutritionTab()),

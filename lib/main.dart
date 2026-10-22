@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:healthsync_maybe/firebase_options.dart';
 import 'package:healthsync_maybe/providers/history_provider.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
@@ -16,15 +17,17 @@ import 'screens/profile_tab.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final prefs = await SharedPreferences.getInstance();
 
   runApp(
     MultiProvider(
       providers: [
+        Provider.value(value: prefs),
         ChangeNotifierProvider(create: (_) => TimerProvider()),
-        ChangeNotifierProvider(create: (_) => ExerciseHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => WorkoutTemplateProvider()),
+        ChangeNotifierProvider(create: (_) => ExerciseHistoryProvider(prefs)),
+        ChangeNotifierProvider(create: (_) => WorkoutTemplateProvider(prefs)),
         ChangeNotifierProvider(create: (_) => QuickWorkoutProvider()),
-        ChangeNotifierProvider(create: (_) => NutritionDataProvider()),
+        ChangeNotifierProvider(create: (_) => NutritionDataProvider(prefs)),
       ],
       child: const MyApp(),
     ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
+import 'package:healthsync_maybe/providers/storage.dart';
 import 'package:healthsync_maybe/widgets/macro_pie_chart.dart';
 
 const _days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -13,7 +15,17 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  final Map<String, int> _hoursByDay = {};
+  static const _key = 'weekly_hours';
+  late final SharedPreferences _prefs;
+  late final Map<String, int> _hoursByDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs = context.read<SharedPreferences>();
+    _hoursByDay = readJson(
+        _prefs, _key, {}, (json) => Map<String, int>.from(json as Map));
+  }
 
   void _showInputDialog() {
     final hoursController = TextEditingController();
@@ -57,6 +69,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 return;
               }
               setState(() => _hoursByDay[day] = hours);
+              writeJson(_prefs, _key, _hoursByDay);
               Navigator.of(context).pop();
             },
           ),

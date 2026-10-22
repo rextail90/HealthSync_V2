@@ -14,10 +14,12 @@ class HistoryTab extends StatelessWidget {
       body: ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (context, index) {
-          final session = sessions[index];
+          final session = sessions[sessions.length - 1 - index]; // newest first
+          final date = DateTime.parse(session['date'] as String);
           final exercises = session['exercises'] as List<Map<String, String>>;
           return ExpansionTile(
             title: Text("Worked out for ${session['duration']}"),
+            subtitle: Text('${date.month}/${date.day}/${date.year}'),
             children: [
               for (final exercise in exercises)
                 ListTile(

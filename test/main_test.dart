@@ -1,6 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:healthsync_maybe/providers/history_provider.dart';
 import 'package:healthsync_maybe/providers/nutrition_data_provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
+import 'package:healthsync_maybe/providers/workout_template_provider.dart';
+
+Future<SharedPreferences> prefsWith(Map<String, Object> values) {
+  SharedPreferences.setMockInitialValues(values);
+  return SharedPreferences.getInstance();
+}
 
 void main() {
   test('TimerProvider tracks wall-clock time, formats and resets', () {
@@ -20,16 +28,47 @@ void main() {
     timer.dispose();
   });
 
-  test('NutritionDataProvider notifies listeners on update', () {
-    final provider = NutritionDataProvider();
+  test('NutritionDataProvider notifies, saves and reloads today\'s macros',
+      () async {
+    final prefs = await prefsWith({});
+    final provider = NutritionDataProvider(prefs);
     var notified = 0;
     provider.addListener(() => notified++);
 
     provider.update(120, 250, 60);
 
     expect(notified, 1);
-    expect(provider.data.protein, 120);
-    expect(provider.data.carbs, 250);
-    expect(provider.data.fats, 60);
+    final reloaded = NutritionDataProvider(prefs).data;
+    expect([reloaded.protein, reloaded.carbs, reloaded.fats], [120, 250, 60]);
+  });
+
+  test('Macros saved on an earlier day load as zeros', () async {
+    final prefs = await prefsWith({
+      'nutrition_today': '{"date":"2000-01-01","protein":1,"carbs":2,"fats":3}',
+    });
+    expect(NutritionDataProvider(prefs).data.protein, 0);
+  });
+
+  test('Templates and history survive an app restart', () async {
+    final prefs = await prefsWith({});
+    final bench = {'name': 'Bench', 'sets': '4', 'reps': '8'};
+    WorkoutTemplateProvider(prefs).addTemplate([bench]);
+    ExerciseHistoryProvider(prefs).addCompletedSession('00:30:00', [bench]);
+
+    expect(WorkoutTemplateProvider(prefs).existingWorkoutTemplates, [
+      [bench]
+    ]);
+    final session = ExerciseHistoryProvider(prefs).completedSessions.single;
+    expect(session['duration'], '00:30:00');
+    expect(session['exercises'], [bench]);
+  });
+
+  test('Corrupt saved data falls back to empty instead of crashing', () async {
+    final prefs = await prefsWith({
+      'workout_templates': 'not json',
+      'workout_history': '[{"oops": true}]',
+    });
+    expect(WorkoutTemplateProvider(prefs).existingWorkoutTemplates, isEmpty);
+    expect(ExerciseHistoryProvider(prefs).completedSessions, isEmpty);
   });
 }
