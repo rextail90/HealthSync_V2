@@ -1,11 +1,11 @@
 {
-    "name": "healthsync_maybe",
-    "short_name": "healthsync_maybe",
+    "name": "HealthSync",
+    "short_name": "HealthSync",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Track workouts, macros and exercise history.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
