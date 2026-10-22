@@ -4,6 +4,7 @@ import 'package:healthsync_maybe/providers/quick_workout_provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/completed_exercise_page.dart';
 import 'package:healthsync_maybe/widgets/add_exercise_dialog.dart';
+import 'package:healthsync_maybe/widgets/timer_text.dart';
 
 class QuickWorkoutPage extends StatefulWidget {
   const QuickWorkoutPage({super.key});
@@ -30,7 +31,6 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = context.watch<TimerProvider>();
     final quickWorkoutProvider = context.watch<QuickWorkoutProvider>();
     final exercises = quickWorkoutProvider.exercises;
 
@@ -46,13 +46,12 @@ class _QuickWorkoutPageState extends State<QuickWorkoutPage> {
       ),
       body: Column(
         children: <Widget>[
-          Text(timerProvider.durationString,
-              style:
-                  const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+          const TimerText(
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              timerProvider.reset();
+              context.read<TimerProvider>().reset();
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.white),

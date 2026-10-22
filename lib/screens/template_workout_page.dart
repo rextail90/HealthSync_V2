@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:healthsync_maybe/providers/timer_provider.dart';
 import 'package:healthsync_maybe/screens/completed_exercise_page.dart';
+import 'package:healthsync_maybe/widgets/timer_text.dart';
 
 class TemplateWorkoutPage extends StatefulWidget {
   final List<Map<String, String>> template;
@@ -22,17 +23,11 @@ class _TemplateWorkoutPageState extends State<TemplateWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final durationString =
-        context.select<TimerProvider, String>((t) => t.durationString);
-
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Current Workout'),
-            Text(durationString),
-          ],
+          children: [Text('Current Workout'), TimerText()],
         ),
         actions: [
           IconButton(

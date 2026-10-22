@@ -5,6 +5,7 @@ import 'package:healthsync_maybe/providers/workout_template_provider.dart';
 import 'package:healthsync_maybe/screens/exercise_template_page.dart';
 import 'package:healthsync_maybe/screens/quick_workout_page.dart';
 import 'package:healthsync_maybe/screens/template_workout_page.dart';
+import 'package:healthsync_maybe/widgets/timer_text.dart';
 
 class ExerciseTab extends StatefulWidget {
   const ExerciseTab({super.key});
@@ -70,7 +71,7 @@ class _ExerciseTabState extends State<ExerciseTab> {
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = context.watch<TimerProvider>();
+    final isRunning = context.select<TimerProvider, bool>((t) => t.isRunning);
     final templateProvider = context.watch<WorkoutTemplateProvider>();
     final templates = templateProvider.existingWorkoutTemplates;
 
@@ -111,7 +112,11 @@ class _ExerciseTabState extends State<ExerciseTab> {
                     icon: const Icon(Icons.delete),
                     onPressed: () {
                       templateProvider.deleteTemplate(index);
-                      timerProvider.reset();
+                      // Only end the running workout if it uses this template.
+                      if (identical(exercises, _activeTemplate)) {
+                        _activeTemplate = null;
+                        context.read<TimerProvider>().reset();
+                      }
                     },
                   ),
                 ),
@@ -120,13 +125,13 @@ class _ExerciseTabState extends State<ExerciseTab> {
           const SizedBox(height: 70), // room for the timer bar
         ],
       ),
-      bottomSheet: timerProvider.isRunning
+      bottomSheet: isRunning
           ? GestureDetector(
               onTap: () => _startWorkout(_activeTemplate),
               child: Container(
                 height: 50,
                 color: Colors.blue,
-                child: Center(child: Text(timerProvider.durationString)),
+                child: const Center(child: TimerText()),
               ),
             )
           : null,

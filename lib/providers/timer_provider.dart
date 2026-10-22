@@ -2,47 +2,45 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 class TimerProvider with ChangeNotifier {
-  Timer? _timer;
-  Duration _duration = Duration.zero;
+  TimerProvider({DateTime Function()? now}) : _now = now ?? DateTime.now;
 
-  bool get isRunning => _timer != null;
+  final DateTime Function() _now;
+  Timer? _ticker;
+  DateTime? _startedAt;
 
-  Duration get duration => _duration;
+  bool get isRunning => _startedAt != null;
+
+  // Measured from the wall clock, so it keeps counting while the phone is
+  // locked or the browser tab is in the background.
+  Duration get duration =>
+      _startedAt == null ? Duration.zero : _now().difference(_startedAt!);
 
   void start() {
     if (isRunning) return;
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _duration += const Duration(seconds: 1);
-      notifyListeners();
-    });
-    notifyListeners();
-  }
-
-  void stop() {
-    if (!isRunning) return;
-    _timer!.cancel();
-    _timer = null;
+    _startedAt = _now();
+    // The ticker only triggers repaints; it doesn't keep time.
+    _ticker =
+        Timer.periodic(const Duration(seconds: 1), (_) => notifyListeners());
     notifyListeners();
   }
 
   void reset() {
-    _timer?.cancel();
-    _timer = null;
-    _duration = Duration.zero;
+    _ticker?.cancel();
+    _ticker = null;
+    _startedAt = null;
     notifyListeners();
   }
 
   String get durationString {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(_duration.inHours);
-    final minutes = twoDigits(_duration.inMinutes.remainder(60));
-    final seconds = twoDigits(_duration.inSeconds.remainder(60));
-    return "$hours:$minutes:$seconds";
+    final d = duration;
+    return '${twoDigits(d.inHours)}:${twoDigits(d.inMinutes.remainder(60))}'
+        ':${twoDigits(d.inSeconds.remainder(60))}';
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _ticker?.cancel();
     super.dispose();
   }
 }
